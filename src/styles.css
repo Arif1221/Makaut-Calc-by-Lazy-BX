@@ -10,7 +10,7 @@
   --color-surface: #151613;
   --color-elevated: #1d1f1a;
   --color-fg: #eceae3;
-  --color-muted: #b1ada3;
+  --color-muted: #c9c5bb;
   --color-subtle: #87837a;
   --color-accent: #d8d4c8;
   --color-accent-fg: #0c0d0b;
@@ -26,7 +26,7 @@
   --radius-lg: 18px;
   --radius-xl: 28px;
 
-  --shadow-border: 0 0 0 1px rgb(236 234 227 / 0.12);
+  --shadow-border: 0 0 0 1px rgb(236 234 227 / 0.30);
   --shadow-border-hover: 0 0 0 1px rgb(236 234 227 / 0.20);
 
   --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
@@ -123,6 +123,10 @@
   }
 
   input[type="number"] {
+  background-color: color-mix(in srgb, var(--color-surface) 88%, var(--color-bg));
+  border-color: var(--color-line);
+  color: var(--color-fg);
+}
     appearance: textfield;
   }
 }
@@ -165,5 +169,13 @@
     color: #161616 !important;
     box-shadow: none !important;
     border-color: #d4d0c8 !important;
+  }
+}
+
+/* Contrast refinement: clearer dark-mode interaction states */
+@media (prefers-color-scheme: dark) {
+  input[type="number"]:focus {
+    border-color: #9d988d !important;
+    box-shadow: 0 0 0 2px rgb(236 234 227 / 0.12);
   }
 }
