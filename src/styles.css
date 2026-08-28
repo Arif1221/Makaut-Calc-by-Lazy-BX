@@ -6,16 +6,16 @@
   --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
-  --color-bg: #0c0d0b;
-  --color-surface: #151613;
-  --color-elevated: #1d1f1a;
-  --color-fg: #eceae3;
-  --color-muted: #c9c5bb;
-  --color-subtle: #87837a;
-  --color-accent: #d8d4c8;
-  --color-accent-fg: #0c0d0b;
-  --color-line: #3a3b35;
-  --color-sage: #8a9a82;
+  --color-bg: #090a09;
+  --color-surface: #191a17;
+  --color-elevated: #24251f;
+  --color-fg: #f5f3ed;
+  --color-muted: #d5d1c7;
+  --color-subtle: #aaa69d;
+  --color-accent: #ebe7dc;
+  --color-accent-fg: #090a09;
+  --color-line: #626159;
+  --color-sage: #a6b59d;
   --color-danger: #c17a72;
 
   --text-micro: 0.6875rem;
@@ -26,8 +26,8 @@
   --radius-lg: 18px;
   --radius-xl: 28px;
 
-  --shadow-border: 0 0 0 1px rgb(236 234 227 / 0.30);
-  --shadow-border-hover: 0 0 0 1px rgb(236 234 227 / 0.20);
+  --shadow-border: 0 0 0 1px rgb(245 243 237 / 0.22);
+  --shadow-border-hover: 0 0 0 1px rgb(245 243 237 / 0.34);
 
   --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -123,11 +123,10 @@
   }
 
   input[type="number"] {
-  background-color: color-mix(in srgb, var(--color-surface) 88%, var(--color-bg));
-  border-color: var(--color-line);
-  color: var(--color-fg);
-}
     appearance: textfield;
+    background-color: color-mix(in srgb, var(--color-surface) 88%, var(--color-bg));
+    border-color: var(--color-line);
+    color: var(--color-fg);
   }
 }
 
@@ -173,9 +172,7 @@
 }
 
 /* Contrast refinement: clearer dark-mode interaction states */
-@media (prefers-color-scheme: dark) {
-  input[type="number"]:focus {
-    border-color: #9d988d !important;
-    box-shadow: 0 0 0 2px rgb(236 234 227 / 0.12);
-  }
+ :root:not([data-theme="light"]) input[type="number"]:focus {
+  border-color: #c2bdb1 !important;
+  box-shadow: 0 0 0 2px rgb(245 243 237 / 0.16);
 }
