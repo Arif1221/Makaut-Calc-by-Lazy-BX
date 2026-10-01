@@ -1,211 +1,135 @@
 # MAKAUT Ledger
 
-A focused SGPA, CGPA, YGPA, and DGPA calculator for MAKAUT B.Tech
-students, supporting both **Regular** and **Lateral Entry** programs.
+A lightweight, client-side MAKAUT academic calculator for SGPA, CGPA, YGPA, DGPA, GPA/percentage conversion, and subject-wise SGPA.
 
-The interface is designed around a compact academic-ledger concept
-rather than a conventional calculator/dashboard UI.
+## Why this version is static
 
-> **Disclaimer:** MAKAUT Ledger is an independent student utility and is
-> not affiliated with or endorsed by MAKAUT.
+MAKAUT Ledger does not need a server for its core calculator functionality. Everything runs in the browser using:
+
+- HTML for structure
+- CSS for layout and responsive behavior
+- Vanilla JavaScript for calculations and UI state
+- `localStorage` for saving work in the current browser
+
+There is no React app, router, backend, database, authentication system, or build step.
 
 ## Features
 
--   Calculate semester **SGPA** and overall **CGPA**
--   Calculate yearly **YGPA**
--   Calculate final **DGPA**
--   Supports:
-    -   **Regular B.Tech** --- 8 semesters
-    -   **Lateral Entry** --- semesters 3--8
--   Credit-weighted calculations
--   Pre-filled known credits for the supported IT curriculum
--   Separate Regular/Lateral modes
--   Light and dark themes
--   Theme preference persisted locally
--   Responsive layout for desktop and mobile
--   Built-in result gauge and percentage conversion
--   Local-first state management; no account is required for normal
-    calculator use
+- Regular B.Tech mode: Sem 1–8
+- Lateral-entry B.Tech mode: Sem 3–8
+- Credit-weighted CGPA
+- Year-wise YGPA
+- Final DGPA using the configured MAKAUT-style weighting
+- GPA → percentage conversion
+- Percentage → GPA conversion
+- Subject-wise SGPA calculator
+- Known-credit reference values
+- Sample data and reset controls
+- Copy result and print result
+- Dark/light theme
+- Browser-local persistence
+- Responsive mobile/tablet/desktop layout
+- No horizontal scrolling on narrow layouts
+- Reduced-motion support
 
-## Design
+## Formulas used
 
-MAKAUT Ledger uses an editorial/ledger-inspired visual language:
+### CGPA
 
--   Serif display typography for academic/document character
--   Compact form controls
--   Year-based semester grouping
--   Persistent calculation summary
--   Warm paper-like light theme
--   Deep, restrained dark theme
--   Minimal visual hierarchy without unnecessary dashboard elements
+`CGPA = Σ(SGPA × Credits) / Σ(Credits)`
 
-The theme toggle changes only the visual presentation; it does not alter
-the calculator's content, layout structure, or calculation logic.
+### YGPA
 
-## Tech Stack
+`YGPA = Σ(SGPA × Credits) / Σ(Credits)` for the semesters in that academic year.
 
--   **React 19**
--   **TypeScript**
--   **Vite**
--   **TanStack Router / Start**
--   **Tailwind CSS v4**
--   **Zustand**
--   **Radix UI**
--   **Lucide React**
--   **Zod**
--   **Playwright**
--   **ESLint + Prettier**
+### Regular B.Tech DGPA
 
-## Project Structure
+`DGPA = (Y1 + Y2 + 1.5×Y3 + 1.5×Y4) / 5`
 
-``` text
-src/
-├── components/
-│   ├── calc/
-│   │   ├── app-header.tsx       # Header, program selector, theme toggle
-│   │   ├── ledger-app.tsx       # Main application shell and theme state
-│   │   ├── reference-sheet.tsx  # Reference/rules information
-│   │   ├── result-gauge.tsx     # CGPA result visualization
-│   │   ├── semester-ledger.tsx  # Semester input interface
-│   │   └── workbench.tsx        # Main calculator workspace
-│   └── ui/                      # Reusable UI primitives
-├── lib/
-│   └── calc/
-│       ├── core.ts              # Calculation logic and academic rules
-│       ├── store.ts             # Calculator state
-│       └── core.test.ts         # Calculation tests
-├── routes/
-│   ├── __root.tsx
-│   └── index.tsx
-└── styles.css                   # Global styles and theme tokens
+### Lateral-entry B.Tech DGPA
+
+`DGPA = (Y2 + 1.5×Y3 + 1.5×Y4) / 4`
+
+### GPA → percentage
+
+`Percentage = (GPA − 0.75) × 10`
+
+The implemented range is GPA 0.75–10.
+
+### Percentage → GPA
+
+`GPA = Percentage / 10 + 0.75`
+
+The implemented range is 0–92.50%.
+
+## Data persistence
+
+The app stores calculator state in browser `localStorage` under:
+
+`makaut-ledger-v1`
+
+Saved data includes the selected programme, semester entries, known-credit values, and subject rows.
+
+No calculator data is intentionally sent to a project backend.
+
+## Running locally
+
+No package installation is required.
+
+The simplest option is to open `index.html` directly in a modern browser.
+
+For a local static server, for example:
+
+```bash
+python -m http.server 8000
 ```
 
-## Calculation Model
+Then open `http://localhost:8000/`.
 
-The calculator uses credit-weighted results.
+## Deployment
 
-For a set of semester results:
+Because the project is static, it can be deployed to any static hosting service, including:
 
-``` text
-CGPA = Σ(SGPA × Semester Credits) / Σ(Semester Credits)
+- Vercel
+- Netlify
+- Cloudflare Pages
+- GitHub Pages
+
+Upload the project files and use `index.html` as the entry page.
+
+## Project structure
+
+```text
+MAKAUT-Ledger/
+├── index.html      # Complete application
+└── README.md       # Project documentation
 ```
 
-The application also derives yearly and final academic results according
-to the selected **Regular** or **Lateral Entry** program structure.
+The current distribution intentionally keeps the application self-contained in one HTML file so it can be copied, hosted, or opened directly without a toolchain.
 
-The calculation implementation is kept separately from the UI in:
+## Browser support
 
-``` text
-src/lib/calc/core.ts
-```
+Designed for current Chromium-based browsers, Firefox, and Safari with support for standard features such as:
 
-This makes the academic logic easier to test and maintain independently
-of the interface.
+- CSS Grid/Flexbox
+- `dialog`
+- `localStorage`
+- `Intl`/standard JavaScript APIs
 
-## Running the Project
+## Important notes
 
-Install dependencies:
+This is an independent student utility and is not affiliated with MAKAUT. For formal applications or official academic records, follow the receiving organisation's requirements and verify current university rules.
 
-``` bash
-npm install
-```
+The calculator's formulas, grade-point table, semester-credit references, and wording are part of the application source and should be reviewed whenever MAKAUT publishes a newer official rule or notice.
 
-Start the development server:
+## Development notes
 
-``` bash
-npm run dev
-```
+The application deliberately prioritizes:
 
-Create a production build:
-
-``` bash
-npm run build
-```
-
-Preview the production build:
-
-``` bash
-npm run preview
-```
-
-## Quality Checks
-
-Type checking:
-
-``` bash
-npm run typecheck
-```
-
-Linting:
-
-``` bash
-npm run lint
-```
-
-Tests:
-
-``` bash
-npm test
-```
-
-Formatting:
-
-``` bash
-npm run format
-```
-
-## Theme
-
-The application defaults to dark mode.
-
-The theme toggle is implemented in the application header and controlled
-by the main calculator shell. The selected theme is stored in browser
-`localStorage` under:
-
-``` text
-makaut-ledger-theme
-```
-
-Supported values:
-
-``` text
-dark
-light
-```
-
-## Screenshots
-
-Example screenshots are included in the `screenshots/` directory.
-
-They cover the main calculator, Regular and Lateral modes, filled
-examples, and supporting reference/workbench views.
-
-## Data & Privacy
-
-The calculator is designed as a local-first student utility.
-
--   Calculator state is stored locally.
--   No account is required for calculating results.
--   No personal student data needs to be sent to a server for the core
-    calculator functionality.
--   Theme preference is stored locally in the browser.
-
-## Contributing
-
-When modifying the project:
-
-1.  Keep calculation logic separate from presentation.
-2.  Preserve the Regular/Lateral distinction.
-3.  Add or update tests when changing calculation rules.
-4.  Avoid changing the established layout unless the change is
-    intentional.
-5.  Keep both desktop and mobile layouts usable.
-6.  Maintain accessible labels and controls.
-7.  Run type checking, linting, and tests before committing.
-
-## License
-
-No license has currently been specified for this project.
-
-If this repository is intended for public distribution, add an explicit
-license before accepting or distributing third-party contributions.
+1. Small footprint
+2. Fast initial load
+3. No unnecessary runtime dependencies
+4. Offline-capable core behavior
+5. Touch-friendly controls
+6. Dense information layout without sacrificing readability
+7. Simple maintenance and deployment

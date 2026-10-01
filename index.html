@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MAKAUT Ledger · SGPA CGPA YGPA DGPA</title>
+<meta name="description" content="Compact MAKAUT SGPA, CGPA, YGPA and DGPA calculator. Runs entirely in your browser and saves locally.">
+<meta name="theme-color" content="#090a09">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23191a17'/%3E%3Crect x='5' y='4' width='14' height='16' rx='1.5' fill='none' stroke='%23ebe7dc' stroke-width='1.5'/%3E%3Cpath d='M8 9h8M8 12.5h8M8 16h5' stroke='%23a6b59d' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#090a09;--surface:#191a17;--elevated:#24251f;--fg:#f5f3ed;--muted:#d5d1c7;--subtle:#aaa69d;
+  --accent:#ebe7dc;--accent-fg:#090a09;--line:#626159;--sage:#a6b59d;--danger:#c17a72;
+  --ring:0 0 0 1px rgb(245 243 237/.22);--ring-h:0 0 0 1px rgb(245 243 237/.34);
+  --display:Georgia,"Times New Roman",ui-serif,serif;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+  --hh:49px;color-scheme:dark;
+}
+:root[data-theme=light]{
+  --bg:#f3f0e8;--surface:#faf8f2;--elevated:#ebe7dc;--fg:#1c1c19;--muted:#57554e;--subtle:#706d64;
+  --accent:#292923;--accent-fg:#f3f0e8;--line:#c5c0b4;--sage:#65765f;--danger:#a8544d;
+  --ring:0 0 0 1px rgb(28 28 25/.12);--ring-h:0 0 0 1px rgb(28 28 25/.2);color-scheme:light;
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--fg);font:13.5px/1.4 var(--sans);min-height:100dvh;
+  background-image:radial-gradient(1000px 400px at 12% -10%,rgb(138 154 130/.08),transparent 55%)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;pointer-events:none}
+svg.i.s{width:14px;height:14px}
+.mono{font-family:var(--mono)}
+.disp{font-family:var(--display);font-weight:400;letter-spacing:-.01em}
+.micro{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);font-weight:500}
+.wrap{max-width:1400px;margin:0 auto;padding:0 12px}
+
+/* buttons */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:30px;padding:0 9px;
+  border-radius:8px;font-size:13px;font-weight:500;white-space:nowrap;user-select:none;transition:transform .12s,background .12s,box-shadow .12s}
+.btn::after{content:"";position:absolute;inset:-4px -2px}
+.btn:active{transform:scale(.96)}
+.btn:focus-visible,.seg button:focus-visible,.strip-btn:focus-visible{outline:2px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:1px}
+.btn.ghost{color:var(--muted)}.btn.ghost:hover{background:var(--elevated);color:var(--fg)}
+.btn.sec{background:var(--elevated);box-shadow:var(--ring)}.btn.sec:hover{box-shadow:var(--ring-h)}
+.btn.pri{background:var(--accent);color:var(--accent-fg)}.btn.pri:hover{opacity:.9}
+.btn.ico{width:30px;padding:0}
+.btn.dim{color:var(--subtle)}.btn.dim:hover{color:var(--danger)}
+
+/* header */
+header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 86%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.hrow{display:flex;align-items:center;gap:8px;padding:6px 12px}
+.mark{width:26px;height:26px;border-radius:8px;background:var(--elevated);box-shadow:var(--ring);display:grid;place-items:center;flex:none}
+.mark svg{width:16px;height:16px}
+.brand{display:none;line-height:1.15}
+.brand b{font:400 16px var(--display)}
+.brand span{display:none;font-size:11px;color:var(--muted)}
+.seg{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:2px;border-radius:10px;background:var(--elevated);box-shadow:var(--ring)}
+.seg button{height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:13px;font-weight:500;padding:0 8px}
+.seg button small{display:none;font-size:11px;color:var(--subtle);font-weight:400}
+.seg button[aria-selected=true]{background:var(--surface);color:var(--fg);box-shadow:var(--ring)}
+.hact{display:flex;gap:4px;flex:none}
+.hact .lbl{display:none}
+.hact .btn.txt{width:30px;padding:0}
+
+/* result strip (phone/tablet) */
+.strip{position:sticky;top:var(--hh);z-index:30;background:color-mix(in srgb,var(--bg) 92%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.strip-btn{width:100%;display:flex;align-items:center;gap:12px;padding:5px 12px;text-align:left}
+.strip-btn .big{font:400 27px/1 var(--display);font-variant-numeric:tabular-nums}
+.strip-mid{flex:1;min-width:0;font-size:12.5px;line-height:1.25;color:var(--muted)}
+.strip-mid>*{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strip-mid .mono{font-size:11px;color:var(--subtle)}
+.strip-r{text-align:right}
+.strip-r .mono{font-size:14px;color:var(--fg)}
+.strip .chev{transition:transform .15s;color:var(--muted)}
+.strip.open .chev{transform:rotate(180deg)}
+.drop{display:none;position:absolute;left:0;right:0;top:100%;max-height:70dvh;overflow:auto;background:var(--surface);
+  border-bottom:1px solid var(--line);padding:12px;box-shadow:0 10px 24px rgb(0 0 0/.3)}
+.strip.open .drop{display:block}
+
+/* layout */
+main.wrap{padding-top:8px;padding-bottom:28px}
+.grid{display:grid;gap:8px;align-items:start}
+.grid>*{min-width:0}
+.card{background:color-mix(in srgb,var(--surface) 85%,transparent);border-radius:12px;box-shadow:var(--ring)}
+
+/* ledger */
+.ledger{padding:8px}
+.lh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:0 4px;margin-bottom:8px}
+.lh h2{font:400 17px var(--display)}
+.lh p{display:none;font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.years{display:grid;gap:8px}
+.year{background:color-mix(in srgb,var(--elevated) 65%,transparent);border-radius:10px;box-shadow:var(--ring);padding:7px}
+.yh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px 6px}
+.yh .t{display:flex;align-items:baseline;gap:6px}
+.yh h3{font:italic 400 15px var(--display)}
+.yh .y{font:11px var(--mono);color:var(--subtle)}
+.yh .w{font:11px var(--mono);color:var(--sage);background:color-mix(in srgb,var(--sage) 15%,transparent);padding:0 4px;border-radius:4px}
+.yg{font:13px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.yg.done{color:var(--fg)}
+.yg span{font-size:11px;letter-spacing:.1em;color:var(--subtle);margin-right:6px}
+.cols,.row{display:grid;grid-template-columns:30px minmax(0,1fr) minmax(0,1fr) 30px;gap:6px;align-items:stretch}
+.cols{margin-bottom:4px}
+.rows{display:grid;gap:6px}
+.row .sem{position:relative;min-height:34px;display:grid;place-items:center;border-radius:8px;background:var(--bg);box-shadow:var(--ring);
+  font:12px var(--mono);color:var(--muted)}
+.row .sem i{position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--line)}
+.row .sem.ok i{background:var(--sage)}
+.row .btn{align-self:center}
+
+/* inputs */
+input,select{font:14px var(--mono);font-variant-numeric:tabular-nums;color:var(--fg);background:var(--bg);width:100%;height:34px;padding:0 9px;
+  border:1px solid var(--line);border-radius:8px;outline:0;transition:border-color .12s,box-shadow .12s;appearance:none;-webkit-appearance:none;min-width:0}
+input::placeholder{font-family:var(--sans);color:var(--subtle)}
+input[type=number]{-moz-appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input:focus,select:focus{border-color:color-mix(in srgb,var(--accent) 55%,transparent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 16%,transparent)}
+input.bad{border-color:color-mix(in srgb,var(--danger) 60%,transparent)}
+select{padding-right:22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%23aaa69d' stroke-width='1.6'%3E%3Cpath d='m1 1 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center}
+@media (pointer:coarse){input,select{font-size:16px;height:38px}.row .sem{min-height:38px}}
+
+/* result details */
+dl.m{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+dl.m>div.w2{grid-column:span 2;display:flex;justify-content:space-between;align-items:baseline}
+dl.m dd{font:14px var(--mono);font-variant-numeric:tabular-nums}
+.bars{margin-top:12px;display:grid;gap:4px}
+.bar{display:grid;grid-template-columns:56px 1fr 36px;gap:8px;align-items:center;font:11px var(--mono)}
+.bar .k{color:var(--subtle)}.bar .v{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar .tr{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar .tr i{display:block;height:100%;border-radius:99px;background:color-mix(in srgb,var(--accent) 85%,transparent);transition:width .45s cubic-bezier(.22,1,.36,1)}
+.note{margin-top:12px;font-size:11px;line-height:1.35;color:var(--muted);background:var(--bg);box-shadow:var(--ring);border-radius:8px;padding:6px 10px}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px}
+
+/* desktop result band */
+.panel{display:none}
+.gauge{position:relative;width:104px;height:104px;flex:none}
+.gauge svg{width:100%;height:100%}
+.gauge .c{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform:translateY(4px);pointer-events:none}
+.gauge .c b{font:400 34px/1 var(--display);font-variant-numeric:tabular-nums}
+.gtext{min-width:0}
+.pct{font-size:13px;color:var(--muted);margin-top:2px}
+.band{font:12px var(--mono);color:var(--sage);margin-top:2px}
+
+/* bench */
+.bench{margin-top:12px}
+.bench-t{display:flex;width:100%;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:12px;text-align:left;
+  background:color-mix(in srgb,var(--surface) 85%,transparent);box-shadow:var(--ring);font:400 16px var(--display);margin-bottom:8px}
+.bench-t svg{transition:transform .15s;color:var(--muted)}
+.bench.open .bench-t svg{transform:rotate(180deg)}
+.bench h2{display:none;font:400 18px var(--display);padding:0 4px;margin-bottom:8px}
+.tools{display:none;gap:8px;align-items:start}
+.bench.open .tools{display:grid}
+.tool{padding:12px}
+.tool .th{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
+.tool h3{font:400 16px var(--display)}
+.tool .k{font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--subtle)}
+.tool label.micro{display:block;margin-bottom:2px}
+.out{font:400 24px/1.2 var(--display);margin-top:8px;font-variant-numeric:tabular-nums}
+.out.bad{color:var(--danger)}
+.hint{font-size:11px;color:var(--muted);margin-top:2px}
+.srow{display:grid;grid-template-columns:1fr 1fr 30px;gap:6px;margin-bottom:6px;align-items:center}
+.sbtns{display:flex;gap:6px;margin-top:8px}.sbtns .btn:first-child{flex:1}
+details.known{padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--surface) 65%,transparent);box-shadow:var(--ring)}
+details.known summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px}
+details.known summary::-webkit-details-marker{display:none}
+details.known summary small{display:block;font-size:11px;color:var(--muted)}
+details.known summary em{font:normal 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--sage)}
+.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.kgrid label{margin-bottom:2px;display:block}
+details.known .btn{margin-top:8px}
+
+footer{border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+footer .wrap{display:flex;flex-direction:column;gap:2px;padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+
+/* toast */
+#toast{white-space:nowrap;max-width:calc(100vw - 24px);position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:100;
+  background:var(--elevated);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:13px;transition:.2s}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* rules sheet */
+dialog{border:0;padding:0;background:var(--surface);color:var(--fg);max-width:min(26rem,100vw);width:100%;height:100dvh;max-height:100dvh;margin:0 0 0 auto;
+  box-shadow:-1px 0 0 var(--line)}
+dialog::backdrop{background:rgb(0 0 0/.55)}
+dialog .sh{position:sticky;top:0;background:var(--surface);padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:start}
+dialog .sh h2{font:400 20px var(--display)}
+dialog .sh p{font-size:12px;color:var(--muted);margin-top:2px}
+dialog .sb{padding:16px;display:grid;gap:20px}
+dialog h3{font:400 18px var(--display)}
+dialog ul{margin:8px 0 0 16px;font-size:13px;color:var(--muted);display:grid;gap:4px}
+dialog .f{margin-top:10px;background:var(--bg);box-shadow:var(--ring);border-radius:8px;padding:6px 10px;font:12px var(--mono)}
+dialog table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px;border-radius:8px;overflow:hidden;box-shadow:var(--ring)}
+dialog th{background:var(--elevated);text-align:left;padding:6px 10px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);font-weight:500}
+dialog td{padding:6px 10px;border-top:1px solid var(--line);color:var(--muted)}
+dialog td.mono{color:var(--fg)}
+dialog small{font-size:11px;color:var(--muted);display:block;margin-top:8px;line-height:1.5}
+dialog details{padding:10px 0;border-top:1px solid var(--line)}
+dialog summary{cursor:pointer;font-size:13px;font-weight:500}
+dialog details p{font-size:13px;color:var(--muted);margin-top:6px}
+dialog a{color:var(--sage)}
+
+/* responsive layout */
+@media (max-width:479px){
+  .wrap{padding-left:8px;padding-right:8px}
+  .hrow{padding:5px 8px;gap:6px}
+  .mark{width:24px;height:24px;border-radius:7px}
+  .mark svg{width:14px;height:14px}
+  .seg button{height:25px;padding:0 6px;font-size:12px}
+  .hact{gap:2px}
+  .hact .btn.txt,.hact .btn.ico{width:29px;padding:0}
+  .strip-btn{gap:8px;padding:4px 8px}
+  .strip-btn .big{font-size:25px}
+  .strip-mid{font-size:11.5px}
+  .strip-mid .mono,.strip-r .mono{font-size:10.5px}
+  main.wrap{padding-top:6px;padding-bottom:18px}
+  .ledger{padding:6px}
+  .lh{padding:0 3px;margin-bottom:6px}
+  .lh h2{font-size:16px}
+  .years{gap:6px}
+  .year{padding:6px}
+  .yh{padding:0 2px 5px}
+  .yh h3{font-size:14px}
+  .yg{font-size:12px}
+  .cols,.row{grid-template-columns:29px minmax(0,1fr) minmax(0,1fr) 30px;gap:5px}
+  .cols{margin-bottom:3px}
+  .rows{gap:5px}
+  input,select{height:38px;padding:0 8px;border-radius:7px}
+  .row .sem{min-height:38px;border-radius:7px}
+  .row .btn.ico{width:30px}
+  .bench{margin-top:8px}
+  .bench-t{padding:7px 9px;margin-bottom:6px;font-size:15px}
+  .tool{padding:10px}
+  .tool .th{margin-bottom:6px}
+  .tool h3{font-size:15px}
+  .out{font-size:22px;margin-top:6px}
+  .acts{margin-top:8px}
+  details.known{padding:8px 10px}
+  .kgrid{gap:5px;margin-top:8px}
+}
+
+@media (min-width:480px){
+  .brand{display:block;min-width:0}
+  .brand b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hact .lbl{display:none}
+  .hact .btn.txt{width:30px;padding:0}
+}
+
+@media (min-width:640px){
+  .lh p{display:block}
+  .seg{flex:none;width:196px;min-width:196px;margin-left:4px}
+  .seg button small{display:none}
+  .seg button{font-size:12px;padding:0 5px}
+  footer .wrap{flex-direction:row;justify-content:space-between;align-items:center}
+}
+
+@media (min-width:800px){
+  .seg{width:212px;min-width:212px;margin-left:6px}
+  .seg button small{display:inline}
+  .seg button{font-size:13px;padding:0 7px}
+  .hact .lbl{display:inline}
+  .hact .btn.txt{width:auto;padding:0 8px}
+}
+
+@media (min-width:720px){
+  .years{grid-template-columns:1fr 1fr}
+  .tools{grid-template-columns:1fr 1fr}
+  .kgrid{grid-template-columns:repeat(8,1fr)}
+}
+
+@media (min-width:1024px){
+  .strip{display:none}
+  .wrap{padding-left:14px;padding-right:14px}
+  main.wrap{padding-top:10px;padding-bottom:20px}
+
+  /* Content-sized ledger: no artificial equal-height cards. */
+  .grid{grid-template-columns:minmax(0,1fr) 340px;gap:12px;align-items:start}
+  .ledger{display:block;padding:10px}
+  .years{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .year{display:block;padding:8px}
+  .yh{padding-bottom:6px}
+  .yh h3{font-size:18px}
+  .yg{font-size:13px}
+  .cols,.row{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) 34px;gap:7px}
+  .rows{gap:7px}
+  input,select{height:38px;font-size:14px;padding:0 9px}
+  .row .sem{min-height:38px;font-size:12px}
+  .btn{height:34px;font-size:13px}
+  .btn.ico{width:34px}
+
+  .panel{display:flex;flex-direction:column;justify-content:space-between;gap:10px;padding:12px}
+  .pa{display:flex;flex-direction:row;align-items:center;gap:10px;text-align:left}
+  .gauge{width:112px;height:112px}
+  .gauge .c b{font-size:34px}
+  .pct{font-size:13px}
+  .band{font-size:11px}
+  .det{margin:0;padding-top:9px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
+  .det dl.m{grid-template-columns:repeat(3,1fr);gap:6px 10px}
+  .det dl.m>div.w2{grid-column:span 2;justify-content:flex-start;gap:10px}
+  .det .bars,.det .note,.det .acts{margin-top:0}
+  .det .side{display:grid;gap:8px}
+  .det dl.m dd{font-size:14px}
+  .bars{gap:3px}
+  .bar{font-size:11px;grid-template-columns:58px 1fr 36px;gap:6px}
+  .bar .tr{height:5px}
+  .note{font-size:11px;padding:6px 8px}
+  .acts{gap:5px}
+
+  .bench{margin-top:10px}
+  .bench-t{display:none}
+  .bench h2{display:block;font-size:22px;padding:0 4px;margin-bottom:6px}
+  .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:start}
+  .tool{padding:10px}
+  .tool h3{font-size:17px}
+  .tool .th{margin-bottom:6px}
+  .out{font-size:28px;margin-top:6px}
+  .hint{font-size:11px}
+  .tool.subj{grid-column:3;grid-row:1 / span 2}
+  details.known{grid-column:1 / span 2;padding:8px 10px}
+  .kgrid{gap:5px;margin-top:8px}
+  .kgrid input{height:34px}
+
+  .hrow{max-width:1400px;margin:0 auto;padding:6px 14px}
+  .mark{width:28px;height:28px}
+  .brand b{font-size:18px}
+  .brand span{display:block;font-size:11px}
+  .seg{width:212px;min-width:212px}
+  .seg button{height:29px}
+  body{font-size:14px}
+}
+
+@media (min-width:1280px){
+  .wrap,.hrow{max-width:1360px}
+  .grid{grid-template-columns:minmax(0,1fr) 360px;gap:14px}
+  .ledger{padding:11px}
+  .years{gap:9px}
+  .year{padding:9px}
+  .yh h3{font-size:19px}
+  .cols,.row{grid-template-columns:36px minmax(0,1fr) minmax(0,1fr) 36px;gap:8px}
+  .rows{gap:8px}
+  input,select{height:40px}
+  .row .sem{min-height:40px}
+  .panel{padding:13px}
+  .gauge{width:118px;height:118px}
+  .tool{padding:11px}
+  .tool h3{font-size:18px}
+  .out{font-size:30px}
+  .bench h2{font-size:23px}
+}
+
+@media print{
+  header,.strip,.bench,#toast,.acts,footer{display:none!important}
+  body{background:#fff;color:#161616}
+  .panel{display:block;position:static}
+  .card,.year{box-shadow:none;border:1px solid #d4d0c8;background:#fff}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M13 5h8M13 12h8M13 19h8M3 17l2 2 4-4M3 7l2 2 4-4"/></symbol>
+    <symbol id="i-eraser" viewBox="0 0 24 24"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7M5 11l9 9"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  </defs>
+</svg>
+
+<header id="hdr">
+  <div class="hrow">
+    <span class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="1.5" fill="none" stroke="var(--accent)" stroke-width="1.5"/><path d="M8 8.5h8M8 12h8M8 15.5h5" stroke="var(--sage)" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </span>
+    <div class="brand"><b>MAKAUT Ledger</b><span>SGPA · CGPA · YGPA · DGPA</span></div>
+    <div class="seg" role="tablist" aria-label="Programme type">
+      <button role="tab" data-prog="regular" aria-selected="true">Regular <small>8 sem</small></button>
+      <button role="tab" data-prog="lateral" aria-selected="false">Lateral <small>Sem 3–8</small></button>
+    </div>
+    <div class="hact">
+      <button class="btn ghost txt" id="b-sample" title="Load sample"><svg class="i s"><use href="#i-list"/></svg><span class="lbl">Sample</span></button>
+      <button class="btn ghost txt" id="b-reset" title="Reset"><svg class="i s"><use href="#i-reset"/></svg><span class="lbl">Reset</span></button>
+      <button class="btn sec txt" id="b-rules" title="Rules and reference"><svg class="i s"><use href="#i-book"/></svg><span class="lbl">Rules</span></button>
+      <button class="btn ghost ico" id="b-theme" aria-label="Toggle theme"><svg class="i"><use id="theme-use" href="#i-sun"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="strip no-print" id="strip">
+  <button class="strip-btn" id="strip-btn" aria-expanded="false" aria-controls="drop">
+    <div><div class="micro" id="s-label">Current CGPA</div><div class="big" id="s-cgpa">—</div></div>
+    <div class="strip-mid"><div id="s-pct">Enter a semester</div><div class="mono" id="s-count">0/8 sems</div></div>
+    <div class="strip-r"><div class="micro">DGPA</div><div class="mono" id="s-dgpa">—</div></div>
+    <svg class="i chev"><use href="#i-chev"/></svg>
+  </button>
+  <div class="drop" id="drop"></div>
+</div>
+
+<main class="wrap">
+  <div class="grid">
+    <section class="card ledger" aria-label="Semester ledger">
+      <div class="lh"><h2>Semester ledger</h2><p>Credits prefilled from GCETTS IT reference where known</p></div>
+      <div class="years" id="years"></div>
+    </section>
+
+    <aside class="card panel" id="panel" aria-label="Result">
+      <div class="pa">
+        <div class="gauge">
+          <svg viewBox="0 0 200 200" aria-hidden="true"><g transform="rotate(135 100 100)">
+            <circle cx="100" cy="100" r="82" fill="none" stroke="var(--line)" stroke-width="2" id="g-track"/>
+            <circle cx="100" cy="100" r="82" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round" id="g-fill" style="transition:stroke-dasharray .5s cubic-bezier(.22,1,.36,1)"/>
+          </g></svg>
+          <div class="c"><b id="p-cgpa">—</b></div>
+        </div>
+        <div class="gtext">
+          <span class="micro" id="p-label">Current CGPA</span>
+          <p class="pct" id="p-pct"></p>
+          <p class="band" id="p-band"></p>
+        </div>
+      </div>
+      <div class="det" id="p-details"></div>
+    </aside>
+  </div>
+
+  <section class="bench" id="bench">
+    <button class="bench-t" id="bench-t" aria-expanded="false"><span>Converters &amp; subject SGPA</span><svg class="i"><use href="#i-chev"/></svg></button>
+    <h2>Converters &amp; subject SGPA</h2>
+    <div class="tools">
+      <div class="card tool">
+        <div class="th"><h3>GPA → percentage</h3><span class="k">Formula</span></div>
+        <label class="micro" for="gpa-in">GPA (0.75–10)</label>
+        <input id="gpa-in" type="number" inputmode="decimal" min="0.75" max="10" step="0.01" placeholder="7.66">
+        <p class="out" id="gpa-out">—</p><p class="hint">(GPA − 0.75) × 10</p>
+      </div>
+      <div class="card tool">
+        <div class="th"><h3>Percentage → GPA</h3><span class="k">Inverse</span></div>
+        <label class="micro" for="pct-in">Percentage (0–92.50)</label>
+        <input id="pct-in" type="number" inputmode="decimal" min="0" max="92.5" step="0.01" placeholder="69.10">
+        <p class="out" id="pct-out">—</p><p class="hint">92.50% is the ceiling for GPA 10.</p>
+      </div>
+      <div class="card tool subj">
+        <div class="th"><h3>Subject SGPA</h3><span class="k">Semester</span></div>
+        <div id="subs"></div>
+        <div class="sbtns">
+          <button class="btn sec" id="sub-add"><svg class="i s"><use href="#i-plus"/></svg>Add subject</button>
+          <button class="btn ghost" id="sub-clear">Clear</button>
+        </div>
+        <p class="out" id="sub-out">—</p><p class="hint" id="sub-hint">Uses the grade-point table in Rules.</p>
+      </div>
+      <details class="known">
+        <summary><span>Known credits · GCETTS IT<small>Reference values only. A semester counts when both SGPA and credits are entered.</small></span><em>Edit</em></summary>
+        <div class="kgrid" id="kgrid"></div>
+        <button class="btn sec" id="k-apply">Apply to empty cells</button>
+      </details>
+    </div>
+
+  </section>
+</main>
+
+<footer><div class="wrap"><p>MAKAUT Ledger · Independent student utility · No affiliation with MAKAUT.</p><p>Work is saved in this browser only.</p></div></footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="rules">
+  <div class="sh">
+    <div><h2>Rules &amp; reference</h2><p>Built around the method printed on MAKAUT grade cards. Not affiliated with the university.</p></div>
+    <button class="btn ghost ico" id="rules-x" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="sb">
+    <section><h3>Regular · 4-year B.Tech</h3>
+      <ul><li>Eight semesters: Sem 1–8.</li><li>YGPA is the credit-weighted mean of each academic year.</li><li>Running CGPA is cumulative credit index ÷ cumulative credits.</li></ul>
+      <p class="f">DGPA = (Y1 + Y2 + 1.5 Y3 + 1.5 Y4) / 5</p></section>
+    <section><h3>Lateral · 3-year B.Tech</h3>
+      <ul><li>Six B.Tech semesters: Sem 3–8.</li><li>Entry is at 2nd year; calculation starts with Sem 3.</li><li>Diploma performance is not mixed into B.Tech CGPA.</li></ul>
+      <p class="f">DGPA = (Y2 + 1.5 Y3 + 1.5 Y4) / 4</p></section>
+    <section><h3>Grade-point table</h3>
+      <small style="margin-top:4px">Points as printed on the supplied MAKAUT grade cards.</small>
+      <table><thead><tr><th>Grade</th><th>Points</th><th>Marks</th><th>Class</th></tr></thead><tbody id="gtable"></tbody></table>
+      <small>F = 2 and I = 2 are reproduced from the grade-point table on the supplied cards. If MAKAUT issues a newer official notice, verify before using this for a formal application.</small></section>
+    <section><h3>FAQ</h3>
+      <details><summary>Does the calculator save my results?</summary><p>Yes. Semester entries, programme selection, known credits and subject rows stay in this browser. Nothing is sent to a server.</p></details>
+      <details><summary>Why isn’t CGPA the simple average of SGPAs?</summary><p>MAKAUT’s cumulative calculation is credit-weighted. A 24-credit semester contributes more than an 18-credit semester.</p></details>
+      <details><summary>What happens if I enter 95% in Percentage → GPA?</summary><p>It is rejected. Under the stated formula, GPA 10 corresponds to 92.50%, so a higher percentage cannot map onto the 10-point scale.</p></details>
+      <details><summary>Why does final DGPA stay blank?</summary><p>Every required semester must be complete. Regular programmes need Sem 1–8; lateral entry needs Sem 3–8.</p></details>
+      <details><summary>Is this an official MAKAUT calculator?</summary><p>No. It is an independent student utility. For formal applications, follow the receiving organisation and use official university records.</p></details>
+    </section>
+    <p style="font-size:12px;color:var(--subtle)">Independent student utility. <a href="https://makautwb.ac.in/page.php?id=199" target="_blank" rel="noopener noreferrer">MAKAUT Rules &amp; Regulations</a></p>
+  </div>
+</dialog>
+
+<script>
+(() => {
+"use strict";
+
+/* ---------- core (ported 1:1 from core.ts) ---------- */
+const GRADE_POINTS = {O:10,E:9,A:8,B:7,C:6,D:5,F:2,I:2};
+const GRADE_TABLE = [
+  ["O",10,"90–100","Outstanding"],["E",9,"80–89","Excellent"],["A",8,"70–79","Very Good"],["B",7,"60–69","Good"],
+  ["C",6,"50–59","Fair"],["D",5,"40–49","Below Average"],["F",2,"Below 40","Failed"],["I",2,"—","Incomplete"]];
+const DEFAULT_KNOWN = {1:"17.5",2:"20.5",3:"22",4:"21",5:"24",6:"22",7:"",8:""};
+const SAMPLE = {
+  regular:[[1,"",""],[2,"",""],[3,"7.36","22"],[4,"7.71","21"],[5,"7.83","24"],[6,"7.73","22"],[7,"",""],[8,"",""]],
+  lateral:[[3,"7.36","22"],[4,"7.71","21"],[5,"7.83","24"],[6,"7.73","22"],[7,"",""],[8,"",""]]};
+
+const yearGroups = p => p === "regular"
+  ? [{year:1,key:"y1",title:"First year",sems:[1,2],weight:1},{year:2,key:"y2",title:"Second year",sems:[3,4],weight:1},
+     {year:3,key:"y3",title:"Third year",sems:[5,6],weight:1.5},{year:4,key:"y4",title:"Final year",sems:[7,8],weight:1.5}]
+  : [{year:2,key:"y2",title:"Second year",sems:[3,4],weight:1},{year:3,key:"y3",title:"Third year",sems:[5,6],weight:1.5},
+     {year:4,key:"y4",title:"Final year",sems:[7,8],weight:1.5}];
+const programSemesters = p => p === "regular" ? [1,2,3,4,5,6,7,8] : [3,4,5,6,7,8];
+
+const parseSgpa = v => { if (String(v).trim()==="") return null; const n=Number(v); return (!Number.isFinite(n)||n<0||n>10)?null:n; };
+const parseCredits = v => { if (String(v).trim()==="") return null; const n=Number(v); return (!Number.isFinite(n)||n<=0)?null:n; };
+const isComplete = r => parseSgpa(r.sgpa)!==null && parseCredits(r.credits)!==null;
+
+function summary(data){
+  let tc=0, ti=0, done=0;
+  for (const r of data){ const s=parseSgpa(r.sgpa), c=parseCredits(r.credits); if(s===null||c===null) continue; tc+=c; ti+=s*c; done++; }
+  return {totalCredits:tc,totalIndex:ti,completed:done,cgpa:tc?ti/tc:null};
+}
+function yearYGPA(data, sems){
+  let idx=0, cr=0;
+  for (const sem of sems){ const r=data.find(d=>d.sem===sem); if(!r) continue;
+    const s=parseSgpa(r.sgpa), c=parseCredits(r.credits); if(s===null||c===null) continue; idx+=s*c; cr+=c; }
+  return cr?idx/cr:null;
+}
+const yearDone = (data, sems) => sems.every(sem => { const r=data.find(d=>d.sem===sem); return r?isComplete(r):false; });
+function finalDGPA(data, p){
+  const g=yearGroups(p);
+  if(!g.every(x=>yearDone(data,x.sems))) return null;
+  const y=g.map(x=>yearYGPA(data,x.sems));
+  if(y.some(v=>v===null)) return null;
+  return p==="regular" ? (y[0]+y[1]+1.5*y[2]+1.5*y[3])/5 : (y[0]+1.5*y[1]+1.5*y[2])/4;
+}
+const gpaToPct = g => { const n=Number(g); return (!Number.isFinite(n)||n<0.75||n>10)?null:(n-0.75)*10; };
+const pctToGpa = p => { const n=Number(p); return (!Number.isFinite(n)||n<0||n>92.5)?null:n/10+0.75; };
+const fmtCr = n => Number.isInteger(n)?String(n):n.toFixed(1);
+const fmt = n => n===null?"—":n.toFixed(2);
+function band(g){ if(g>=9)return["O","Outstanding"]; if(g>=8)return["E","Excellent"]; if(g>=7)return["A","Very Good"];
+  if(g>=6)return["B","Good"]; if(g>=5)return["C","Fair"]; if(g>=4)return["D","Below Average"]; return["F","Failed"]; }
+function subjectSgpa(rows){
+  let idx=0, cr=0;
+  for(const r of rows){ const pts=GRADE_POINTS[r.grade], c=parseCredits(r.credits); if(pts===undefined||c===null) continue; idx+=pts*c; cr+=c; }
+  return {sgpa:cr?idx/cr:null,credits:cr};
+}
+const missingSems = (data,p) => programSemesters(p).filter(sem => { const r=data.find(d=>d.sem===sem); return !r||!isComplete(r); });
+
+/* ---------- state ---------- */
+const KEY = "makaut-ledger-v1";
+const blankSubjects = () => [{id:"s1",grade:"",credits:""},{id:"s2",grade:"",credits:""},{id:"s3",grade:"",credits:""}];
+const emptySems = (p, known) => programSemesters(p).map(sem => ({sem,sgpa:"",credits:known[sem]||""}));
+let S = { program:"regular", semesters:emptySems("regular",DEFAULT_KNOWN), knownCredits:{...DEFAULT_KNOWN}, subjects:blankSubjects() };
+
+function load(){
+  try {
+    const raw = localStorage.getItem(KEY); if(!raw) return;
+    let p = JSON.parse(raw); p = p && p.state ? p.state : p;   // also reads the old React app's saved data
+    if(!p || (p.program!=="regular"&&p.program!=="lateral")) return;
+    S.program = p.program;
+    S.knownCredits = {...DEFAULT_KNOWN, ...(p.knownCredits||{})};
+    const base = emptySems(S.program, S.knownCredits);
+    if (Array.isArray(p.semesters)) for (const row of base){
+      const f = p.semesters.find(x=>x.sem===row.sem);
+      if (f){ row.sgpa=String(f.sgpa??""); row.credits=String(f.credits??"") ; }
+    }
+    S.semesters = base;
+    if (Array.isArray(p.subjects) && p.subjects.length) S.subjects = p.subjects.map((r,i)=>({id:r.id||("s"+i),grade:r.grade||"",credits:String(r.credits??"")}));
+  } catch(e){}
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+
+/* ---------- helpers ---------- */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+let toastT;
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("on"),1800); }
+const ic = (id, cls="i s") => `<svg class="${cls}"><use href="#i-${id}"/></svg>`;
+const numInputBase = e => { if(e.target.matches('input[type=number]')) e.target.blur(); };
+
+/* ---------- ledger ---------- */
+function buildLedger(){
+  $("#years").dataset.n = yearGroups(S.program).length;
+  $("#years").innerHTML = yearGroups(S.program).map(g => `
+    <article class="year" data-year="${g.key}">
+      <div class="yh">
+        <div class="t"><h3>${g.title}</h3><span class="y">Y${g.year}</span>${g.weight>1?`<span class="w">×${g.weight}</span>`:""}</div>
+        <p class="yg"><span>YGPA</span><b class="mono" data-ygpa style="font-weight:400">—</b></p>
+      </div>
+      <div class="cols micro"><span></span><span>SGPA</span><span>Credits</span><span></span></div>
+      <div class="rows">${g.sems.map(sem => `
+        <div class="row">
+          <div class="sem" data-semdot="${sem}">${String(sem).padStart(2,"0")}<i></i></div>
+          <input type="number" inputmode="decimal" min="0" max="10" step="0.01" placeholder="7.80" data-sem="${sem}" data-f="sgpa" aria-label="Semester ${sem} SGPA">
+          <input type="number" inputmode="decimal" min="0" step="0.5" placeholder="22" data-sem="${sem}" data-f="credits" aria-label="Semester ${sem} credits">
+          <button class="btn ghost ico dim" data-clear="${sem}" aria-label="Clear semester ${sem}">${ic("eraser")}</button>
+        </div>`).join("")}
+      </div>
+    </article>`).join("");
+  syncLedger();
+}
+function syncLedger(){
+  $$("#years input[data-sem]").forEach(inp => {
+    const row = S.semesters.find(r => r.sem === +inp.dataset.sem);
+    inp.value = row ? row[inp.dataset.f] : "";
+  });
+}
+
+/* ---------- compute + paint ---------- */
+function detailsHTML(d){
+  const g = yearGroups(S.program);
+  const bars = g.map(x => {
+    const yg = yearYGPA(S.semesters, x.sems);
+    const w = yg==null ? 0 : Math.min(100, Math.max(6, yg/10*100));
+    return `<div class="bar"><span class="k">Y${x.year}${x.weight>1?" ×1.5":""}</span><div class="tr"><i style="width:${w}%"></i></div><span class="v">${fmt(yg)}</span></div>`;
+  }).join("");
+  const note = d.dgpa===null
+    ? (d.missing.length===S.semesters.length ? "Complete every required semester to unlock the final DGPA." : `Still needed: Sem ${d.missing.join(", ")}.`)
+    : "All required semesters are in. Final DGPA is ready.";
+  return `
+    <dl class="m">
+      <div><dt class="micro">Credits</dt><dd>${fmtCr(d.sum.totalCredits)}</dd></div>
+      <div><dt class="micro">Cr. index</dt><dd>${d.sum.totalIndex.toFixed(2)}</dd></div>
+      <div><dt class="micro">Completed</dt><dd>${d.sum.completed} / ${S.semesters.length}</dd></div>
+      <div><dt class="micro">Last YGPA</dt><dd>${fmt(d.latest)}</dd></div>
+      <div class="w2"><dt class="micro">Final DGPA</dt><dd>${fmt(d.dgpa)}</dd></div>
+    </dl>
+    <div class="bars">${bars}</div>
+    <div class="side">
+      <p class="note">${note}</p>
+      <div class="acts">
+        <button class="btn pri" data-act="copy">${ic("copy")}Copy</button>
+        <button class="btn sec" data-act="print">${ic("print")}Print</button>
+      </div>
+    </div>`;
+}
+
+const ARC_R = 82, CIRC = 2*Math.PI*ARC_R, USABLE = CIRC*0.75;
+function update(){
+  const sum = summary(S.semesters);
+  const dgpa = finalDGPA(S.semesters, S.program);
+  const pct = gpaToPct(sum.cgpa);
+  const groups = yearGroups(S.program);
+  const latest = [...groups].reverse().map(g=>yearYGPA(S.semesters,g.sems)).find(v=>v!==null) ?? null;
+  const missing = missingSems(S.semesters, S.program);
+  const bnd = sum.cgpa!==null ? band(sum.cgpa) : null;
+  const label = S.program==="lateral" ? "CGPA · Lateral" : "Current CGPA";
+  const d = {sum,dgpa,pct,latest,missing};
+  window.__result = {sum,dgpa,pct};
+
+  // ledger bits
+  groups.forEach(g => {
+    const el = $(`[data-year="${g.key}"]`); if(!el) return;
+    $("[data-ygpa]", el).textContent = fmt(yearYGPA(S.semesters, g.sems));
+    $(".yg", el).classList.toggle("done", yearDone(S.semesters, g.sems));
+  });
+  S.semesters.forEach(r => {
+    const dot = $(`[data-semdot="${r.sem}"]`); if(dot) dot.classList.toggle("ok", isComplete(r));
+    for (const f of ["sgpa","credits"]){
+      const inp = $(`input[data-sem="${r.sem}"][data-f="${f}"]`); if(!inp) continue;
+      const bad = r[f]!=="" && (f==="sgpa" ? parseSgpa(r[f])===null : parseCredits(r[f])===null);
+      inp.classList.toggle("bad", bad);
+      inp.setAttribute("aria-invalid", bad);
+    }
+  });
+
+  // strip
+  $("#s-label").textContent = label;
+  $("#s-cgpa").textContent = fmt(sum.cgpa);
+  $("#s-pct").textContent = (sum.completed===0 ? "Enter a semester" : pct===null ? "—" : pct.toFixed(2)+"%") + (bnd&&sum.cgpa!==null ? " · "+bnd[0] : "");
+  $("#s-count").textContent = `${sum.completed}/${S.semesters.length} sems`;
+  $("#s-dgpa").textContent = fmt(dgpa);
+
+  // panel
+  $("#p-label").textContent = label;
+  $("#p-cgpa").textContent = fmt(sum.cgpa);
+  $("#p-pct").textContent = sum.completed===0 ? "Enter a completed semester" : pct===null ? "Percentage conversion unavailable" : pct.toFixed(2)+"% equivalent";
+  $("#p-band").textContent = bnd&&sum.cgpa!==null ? `Band ${bnd[0]} · ${bnd[1]}` : "";
+  const filled = sum.cgpa==null ? 0 : Math.min(1,Math.max(0,sum.cgpa/10))*USABLE;
+  $("#g-track").setAttribute("stroke-dasharray", `${USABLE} ${CIRC}`);
+  $("#g-fill").setAttribute("stroke-dasharray", `${filled} ${CIRC}`);
+
+  const html = detailsHTML(d);
+  $("#p-details").innerHTML = html;
+  $("#drop").innerHTML = html;
+
+  // program toggle
+  $$(".seg button").forEach(b => b.setAttribute("aria-selected", b.dataset.prog===S.program));
+  save();
+}
+
+/* ---------- bench ---------- */
+function paintGpaPct(){
+  const v = $("#gpa-in").value, out = v===""?null:gpaToPct(v), bad = v!=="" && out===null, el = $("#gpa-out");
+  el.textContent = out===null ? (bad?"Out of range":"—") : out.toFixed(2)+"%"; el.classList.toggle("bad", bad);
+}
+function paintPctGpa(){
+  const v = $("#pct-in").value, n = Number(v), out = v===""?null:pctToGpa(v), hi = v!=="" && Number.isFinite(n) && n>92.5, el = $("#pct-out");
+  el.textContent = out===null ? (hi?"Not achievable":"—") : out.toFixed(2)+" GPA"; el.classList.toggle("bad", hi);
+}
+function buildSubjects(){
+  $("#subs").innerHTML = S.subjects.map(r => `
+    <div class="srow">
+      <select data-sid="${r.id}" data-f="grade" aria-label="Grade">
+        <option value="">Grade</option>
+        ${Object.entries(GRADE_POINTS).map(([g,p])=>`<option value="${g}"${r.grade===g?" selected":""}>${g} · ${p}</option>`).join("")}
+      </select>
+      <input type="number" inputmode="decimal" min="0" step="0.5" placeholder="Credits" value="${r.credits}" data-sid="${r.id}" data-f="credits" aria-label="Credits">
+      <button class="btn ghost ico dim" data-rm="${r.id}" aria-label="Remove subject">${ic("trash","i")}</button>
+    </div>`).join("");
+  paintSubjects();
+}
+function paintSubjects(){
+  const r = subjectSgpa(S.subjects);
+  $("#sub-out").textContent = r.sgpa===null ? "—" : r.sgpa.toFixed(2);
+  $("#sub-hint").textContent = r.credits ? `Σ(GP × Cr) / ${r.credits} cr` : "Uses the grade-point table in Rules.";
+}
+function buildKnown(){
+  $("#kgrid").innerHTML = [1,2,3,4,5,6,7,8].map(s => `
+    <div><label class="micro" for="known-${s}">Sem ${s}</label>
+    <input id="known-${s}" type="number" inputmode="decimal" min="0" step="0.5" placeholder="—" value="${S.knownCredits[s]??""}" data-known="${s}"></div>`).join("");
+}
+
+/* ---------- events ---------- */
+document.addEventListener("wheel", e => { if (e.target.matches && e.target.matches('input[type=number]:focus')) e.target.blur(); }, {passive:true});
+document.addEventListener("focusin", e => { if (e.target.matches && e.target.matches("input")) setTimeout(()=>e.target.select&&e.target.select(),0); });
+
+$("#years").addEventListener("input", e => {
+  const t = e.target; if(!t.dataset.sem) return;
+  const row = S.semesters.find(r => r.sem === +t.dataset.sem); if(!row) return;
+  row[t.dataset.f] = t.value; update();
+});
+$("#years").addEventListener("click", e => {
+  const b = e.target.closest("[data-clear]"); if(!b) return;
+  const sem = +b.dataset.clear, row = S.semesters.find(r=>r.sem===sem);
+  row.sgpa = ""; row.credits = S.knownCredits[sem] || "";
+  syncLedger(); update(); toast(`Semester ${sem} cleared`);
+});
+
+$$(".seg button").forEach(b => b.addEventListener("click", () => {
+  const next = b.dataset.prog; if(next===S.program) return;
+  const rows = emptySems(next, S.knownCredits).map(row => {
+    const prev = S.semesters.find(s=>s.sem===row.sem);
+    return prev ? {...row, sgpa:prev.sgpa, credits:prev.credits||row.credits} : row;
+  });
+  S.program = next; S.semesters = rows;
+  buildLedger(); update();
+  toast(next==="regular" ? "Regular 4-year ledger" : "Lateral 3-year ledger");
+}));
+
+$("#b-sample").addEventListener("click", () => {
+  S.semesters = SAMPLE[S.program].map(([sem,sgpa,credits]) => ({sem,sgpa,credits:credits||S.knownCredits[sem]||""}));
+  syncLedger(); update(); toast("Sample semesters loaded");
+});
+$("#b-reset").addEventListener("click", () => {
+  S.semesters = emptySems(S.program, S.knownCredits); S.subjects = blankSubjects();
+  syncLedger(); buildSubjects(); update(); toast("Scores cleared");
+});
+
+// theme
+function setTheme(t, persist){
+  document.documentElement.dataset.theme = t;
+  $("#theme-use").setAttribute("href", t==="dark" ? "#i-sun" : "#i-moon");
+  $('meta[name=theme-color]').setAttribute("content", t==="dark" ? "#090a09" : "#f3f0e8");
+  if (persist) try { localStorage.setItem("makaut-ledger-theme", t); } catch(e){}
+}
+$("#b-theme").addEventListener("click", () => setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark", true));
+
+// strip dropdown
+const strip = $("#strip");
+$("#strip-btn").addEventListener("click", () => {
+  const o = strip.classList.toggle("open"); $("#strip-btn").setAttribute("aria-expanded", o);
+});
+document.addEventListener("click", e => { if (strip.classList.contains("open") && !strip.contains(e.target)) { strip.classList.remove("open"); $("#strip-btn").setAttribute("aria-expanded","false"); } });
+
+// copy / print (delegated, since details are re-rendered)
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-act]"); if(!b) return;
+  if (b.dataset.act === "print") { strip.classList.remove("open"); window.print(); return; }
+  const {sum,dgpa,pct} = window.__result;
+  const text = [
+    `MAKAUT Ledger · ${S.program==="regular"?"Regular":"Lateral"} B.Tech`,
+    `CGPA: ${fmt(sum.cgpa)}`, `Credits: ${fmtCr(sum.totalCredits)}`, `Final DGPA: ${fmt(dgpa)}`,
+    `Percentage equivalent: ${pct===null?"—":pct.toFixed(2)+"%"}`].join("\n");
+  try { await navigator.clipboard.writeText(text); toast("Result summary copied"); } catch(err) {
+    const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); toast("Result summary copied"); } catch(e2){ toast("Copy is not available"); }
+    ta.remove();
+  }
+});
+
+// bench
+$("#bench-t").addEventListener("click", () => {
+  const o = $("#bench").classList.toggle("open"); $("#bench-t").setAttribute("aria-expanded", o);
+});
+$("#gpa-in").addEventListener("input", paintGpaPct);
+$("#pct-in").addEventListener("input", paintPctGpa);
+$("#subs").addEventListener("input", e => { const t=e.target; if(!t.dataset.sid) return;
+  S.subjects.find(r=>r.id===t.dataset.sid)[t.dataset.f] = t.value; paintSubjects(); save(); });
+$("#subs").addEventListener("change", e => { const t=e.target; if(!t.dataset.sid) return;
+  S.subjects.find(r=>r.id===t.dataset.sid)[t.dataset.f] = t.value; paintSubjects(); save(); });
+$("#subs").addEventListener("click", e => { const b=e.target.closest("[data-rm]"); if(!b) return;
+  S.subjects = S.subjects.length<=1 ? [{id:"s1",grade:"",credits:""}] : S.subjects.filter(r=>r.id!==b.dataset.rm);
+  buildSubjects(); save(); });
+$("#sub-add").addEventListener("click", () => {
+  S.subjects.push({id:"s"+Date.now().toString(36)+Math.random().toString(16).slice(2,5),grade:"",credits:""});
+  buildSubjects(); save(); });
+$("#sub-clear").addEventListener("click", () => { S.subjects = blankSubjects(); buildSubjects(); save(); toast("Subject rows cleared"); });
+
+$("#kgrid").addEventListener("input", e => {
+  const t = e.target; if(!t.dataset.known) return;
+  const sem = +t.dataset.known; S.knownCredits[sem] = t.value;
+  const row = S.semesters.find(r=>r.sem===sem);
+  if (row && !row.sgpa) { row.credits = t.value; syncLedger(); }
+  update();
+});
+$("#k-apply").addEventListener("click", () => {
+  S.semesters.forEach(r => { if(!r.credits) r.credits = S.knownCredits[r.sem] || ""; });
+  syncLedger(); update(); toast("Empty credit cells filled from the reference");
+});
+
+// rules dialog
+const dlg = $("#rules");
+$("#b-rules").addEventListener("click", () => dlg.showModal());
+$("#rules-x").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+$("#gtable").innerHTML = GRADE_TABLE.map(([g,p,m,l]) => `<tr><td class="mono">${g}</td><td class="mono">${p}</td><td>${m}</td><td>${l}</td></tr>`).join("");
+
+// keep sticky offsets in sync with real header height
+const hdr = $("#hdr");
+const setHH = () => document.documentElement.style.setProperty("--hh", hdr.offsetHeight + "px");
+addEventListener("resize", setHH); addEventListener("load", setHH);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(setHH);
+
+/* ---------- init ---------- */
+let th = "dark"; try { const t = localStorage.getItem("makaut-ledger-theme"); if (t==="light"||t==="dark") th = t; } catch(e){}
+setTheme(th, false);
+load();
+buildLedger(); buildSubjects(); buildKnown(); paintGpaPct(); paintPctGpa(); update(); setHH();
+})();
+</script>
+</body>
+</html>
