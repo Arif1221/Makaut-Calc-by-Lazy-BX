@@ -148,6 +148,8 @@ This static build includes:
 - A web app manifest
 - `robots.txt` that permits crawling
 
+The home page uses the primary search phrase “MAKAUT CGPA calculator” alongside the product name “MAKAUT Ledger” and publisher identity “Lazy BX” in its title, heading, description, structured data, and visible copy. Search ranking and the exact result title are determined by search engines and are not guaranteed by these on-page signals.
+
 ### Canonical URL and sitemap
 
 The preferred production URL is `https://makaut-cgpa-calculator.vercel.app/`. The older `https://makautcalcbx.vercel.app/` deployment serves the same app, so both page copies point their canonical and search/social metadata to the preferred URL. The sitemap lists only the preferred URL, and `robots.txt` points to that sitemap. Keep these values aligned if the preferred domain changes. Google treats canonicals and sitemap URLs as signals and may choose a different canonical.
