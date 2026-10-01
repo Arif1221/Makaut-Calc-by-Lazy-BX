@@ -157,6 +157,6 @@ After deployment, verify the homepage in Google Search Console using URL Inspect
 
 ## UI refinement pass
 
-The current version uses a two-row mobile header so the Regular/Lateral switch and utility controls remain readable without overlap. The mobile result summary gives CGPA its own prominent column and stacks Percentage, semester progress, and DGPA in a readable supporting column. Wider headers use a wrapping layout that keeps programme selection and utility controls intact through intermediate widths.
+The current version uses a compact two-row mobile header so the Regular/Lateral switch and utility controls remain readable without overlap. On phones, a short sticky result bar keeps CGPA and percentage visible; tapping it opens the full result breakdown, progress, DGPA, and actions. Wider headers use a wrapping layout that keeps programme selection and utility controls intact through intermediate widths.
 
 The desktop ledger remains the primary section, with the result panel kept secondary. Converters and subject SGPA share one collapsible section at all widths. Light mode is the first-visit default; both themes have separate surface and text colors. Result details update in place while typing, and local state persistence is debounced.
