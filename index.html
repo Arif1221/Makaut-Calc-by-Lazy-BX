@@ -243,34 +243,34 @@ dialog a{color:var(--sage)}
 .panel{border:0;background:var(--surface)}
 
 @media (max-width:700px){
-  :root{--hh:100px}
+  :root{--hh:88px}
   .wrap{padding-left:10px;padding-right:10px}
-  .hrow{display:grid;grid-template-columns:minmax(0,1fr) 122px;grid-template-areas:"identity theme" "seg hact";gap:7px 8px;padding:8px 10px}
+  .hrow{display:grid;grid-template-columns:minmax(0,1fr) 122px;grid-template-areas:"identity theme" "seg hact";gap:5px 8px;padding:6px 10px}
   .identity{grid-area:identity;min-width:0}
   .theme-btn{justify-self:end}
   .brand{min-width:0}.brand b{font-size:18px;overflow:hidden;text-overflow:ellipsis}
-  .mark{width:36px;height:36px}
+  .mark{width:34px;height:34px}
   .seg{grid-area:seg;width:100%;min-width:0;max-width:none;margin:0;padding:3px}
-  .seg button{height:38px;font-size:14px}
+  .seg button{height:36px;font-size:14px}
   .seg button small{display:none}
   .hact{grid-area:hact;gap:3px;justify-self:end;justify-content:flex-end}
-  .hact .btn.txt{width:38px;height:40px}
+  .hact .btn.txt{width:36px;height:36px}
   .hact .lbl{display:none}
-  .theme-btn{width:40px;height:40px}
+  .theme-btn{width:36px;height:36px}
   .strip{top:var(--hh);background:color-mix(in srgb,var(--bg) 97%,transparent)}
-  .strip-btn{display:grid;grid-template-columns:minmax(80px,.65fr) minmax(0,1fr) 18px;grid-template-rows:repeat(3,minmax(24px,1fr));gap:2px 9px;padding:8px 10px;min-height:104px}
-  .strip-primary{grid-column:1;grid-row:1 / span 3;display:flex;flex-direction:column;justify-content:center;min-width:0}
+  .strip-btn{display:grid;grid-template-columns:minmax(80px,.65fr) minmax(0,1fr) 18px;grid-template-rows:repeat(2,minmax(27px,1fr));gap:2px 9px;padding:7px 10px;min-height:78px}
+  .strip-primary{grid-column:1;grid-row:1 / span 2;display:flex;flex-direction:column;justify-content:center;min-width:0}
   .strip-primary .micro{font-size:10px;letter-spacing:.07em}
-  .strip-primary .big{font:400 38px/.98 var(--display);margin-top:3px;letter-spacing:-.02em}
-  .strip-stats{display:contents}
-  .strip-stat{min-width:0;display:flex;flex-direction:row;align-items:baseline;justify-content:space-between;gap:6px;padding:0 0 0 8px;border-left:1px solid var(--line)}
-  .strip-stat:nth-child(1){grid-column:2;grid-row:1}
-  .strip-stat:nth-child(2){grid-column:2;grid-row:2}
-  .strip-stat:nth-child(3){grid-column:2;grid-row:3}
+  .strip-primary .big{font:400 34px/.98 var(--display);margin-top:2px;letter-spacing:-.02em}
+  .strip-stats{grid-column:2;grid-row:1 / span 2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:1px 7px;align-items:center;min-width:0}
+  .strip-stat{min-width:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;padding:0;border:0}
+  .strip-stat:nth-child(1){grid-column:1 / span 2;grid-row:1;flex-direction:row;align-items:baseline;justify-content:space-between;gap:6px}
+  .strip-stat:nth-child(2){grid-column:1;grid-row:2}
+  .strip-stat:nth-child(3){grid-column:2;grid-row:2}
   .strip-stat .micro{font-size:9px;letter-spacing:.06em;white-space:nowrap}
-  .strip-stat strong{font-size:12px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
-  .strip-stat .mono{font-size:12px}
-  .strip .chev{grid-column:3;grid-row:1 / span 3;width:16px;height:16px}
+  .strip-stat strong{font-size:11px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+  .strip-stat .mono{font-size:11px}
+  .strip .chev{grid-column:3;grid-row:1 / span 2;width:16px;height:16px}
   main.wrap{padding-top:8px;padding-bottom:18px}
   .lh{padding:0 2px;margin-bottom:8px}
   .lh h1{font-size:19px}
@@ -302,11 +302,10 @@ dialog a{color:var(--sage)}
   .brand span{font-size:9px}
   .hact{gap:2px}
   .hact .btn.txt{width:35px}
-  .strip-btn{grid-template-columns:minmax(78px,.85fr) minmax(0,1fr) 16px;gap:3px 6px;padding-left:8px;padding-right:8px}
-  .strip-primary .big{font-size:35px}
-  .strip-stat{padding-left:5px;gap:3px}
+  .strip-btn{grid-template-columns:minmax(74px,.8fr) minmax(0,1fr) 16px;gap:3px 5px;padding-left:8px;padding-right:8px}
+  .strip-primary .big{font-size:32px}
   .strip-stat .micro{font-size:8px}
-  .strip-stat strong{font-size:11px}
+  .strip-stat strong{font-size:10.5px}
   .year{padding:7px}
   .cols,.row{grid-template-columns:29px minmax(0,1fr) minmax(0,1fr) 36px;gap:5px}
 }
