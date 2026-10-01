@@ -277,16 +277,16 @@ dialog a{color:var(--sage)}
   .seo-copy{margin:6px 0 0;padding:7px 0;font-size:11px}
   .seo-formulas{display:none}
   .years{grid-template-columns:1fr;gap:7px}
-  .year{padding:8px}
-  .yh{padding-bottom:6px}
-  .yh h3{font-size:16px}
+  .year{padding:7px}
+  .yh{padding-bottom:4px}
+  .yh h3{font-size:15.5px}
   .yh .y,.yh .w{font-size:10px}
   .cols,.row{grid-template-columns:32px minmax(0,1fr) minmax(0,1fr) 38px;gap:6px}
-  .cols{margin-bottom:4px}
-  .rows{gap:6px}
-  .row .sem{min-height:40px}
-  .row .btn.ico{width:38px;height:40px}
-  input,select{height:40px;padding:0 8px;font-size:16px}
+  .cols{margin-bottom:3px}
+  .rows{gap:5px}
+  .row .sem{min-height:38px}
+  .row .btn.ico{width:38px;height:38px}
+  input,select{height:38px;padding:0 8px;font-size:16px}
   .bench{margin-top:10px}
   .bench-t{min-height:46px;font-size:16px}
   .bench.open .tools{grid-template-columns:1fr;gap:8px}
@@ -320,7 +320,7 @@ dialog a{color:var(--sage)}
   .year{padding:10px}
   .yh h3{font-size:17px}
   .cols,.row{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) 36px;gap:7px}
-  .row .sem{min-height:40px}
+  .row .sem{min-height:38px}
   input,select{height:40px;font-size:14px}
   .row .btn.ico{width:36px;height:40px}
   .strip-btn{gap:16px;padding:10px 18px}
@@ -381,8 +381,8 @@ dialog a{color:var(--sage)}
   .yh h3{font-size:18px}
   .cols,.row{grid-template-columns:36px minmax(0,1fr) minmax(0,1fr) 38px;gap:8px}
   input,select{height:40px;font-size:14px}
-  .row .sem{min-height:40px}
-  .row .btn.ico{width:38px;height:40px}
+  .row .sem{min-height:38px}
+  .row .btn.ico{width:38px;height:38px}
   .panel{display:flex;flex-direction:column;gap:11px;padding:16px;align-self:start}
   .pa{display:flex;align-items:center;gap:12px;text-align:left}
   .gauge{width:100px;height:100px}
@@ -478,11 +478,11 @@ dialog a{color:var(--sage)}
     <div class="strip-stats">
       <div class="strip-stat">
         <span class="micro">Percentage</span>
-        <strong id="s-pct">Enter a semester</strong>
+        <strong id="s-pct">—</strong>
       </div>
       <div class="strip-stat">
         <span class="micro">Progress</span>
-        <strong class="mono" id="s-count">0/8 sems</strong>
+        <strong class="mono" id="s-count">0 / 8</strong>
       </div>
       <div class="strip-stat">
         <span class="micro">DGPA</span>
@@ -799,8 +799,8 @@ function update(){
   // strip
   $("#s-label").textContent = label;
   $("#s-cgpa").textContent = fmt(sum.cgpa);
-  $("#s-pct").textContent = (sum.completed===0 ? "Enter a semester" : pct===null ? "—" : pct.toFixed(2)+"%") + (bnd&&sum.cgpa!==null ? " · "+bnd[0] : "");
-  $("#s-count").textContent = `${sum.completed} / ${S.semesters.length} semesters`;
+  $("#s-pct").textContent = (sum.completed===0 ? "—" : pct===null ? "—" : pct.toFixed(2)+"%") + (bnd&&sum.cgpa!==null ? " · "+bnd[0] : "");
+  $("#s-count").textContent = `${sum.completed} / ${S.semesters.length}`;
   $("#s-dgpa").textContent = fmt(dgpa);
 
   // panel
