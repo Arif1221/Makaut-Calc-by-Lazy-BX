@@ -3,10 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MAKAUT Ledger · SGPA CGPA YGPA DGPA</title>
-<meta name="description" content="Compact MAKAUT SGPA, CGPA, YGPA and DGPA calculator. Runs entirely in your browser and saves locally.">
+<title>MAKAUT SGPA &amp; CGPA Calculator | YGPA &amp; DGPA</title>
+<meta name="description" content="Free MAKAUT SGPA, CGPA, YGPA and DGPA calculator for Regular and Lateral B.Tech students. Credit-weighted, mobile-friendly and works in your browser.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="googlebot" content="index, follow">
+<meta name="application-name" content="MAKAUT Ledger">
+<meta name="author" content="MAKAUT Ledger">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#090a09">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23191a17'/%3E%3Crect x='5' y='4' width='14' height='16' rx='1.5' fill='none' stroke='%23ebe7dc' stroke-width='1.5'/%3E%3Cpath d='M8 9h8M8 12.5h8M8 16h5' stroke='%23a6b59d' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MAKAUT Ledger">
+<meta property="og:title" content="MAKAUT SGPA &amp; CGPA Calculator | YGPA &amp; DGPA">
+<meta property="og:description" content="Calculate MAKAUT SGPA, CGPA, YGPA and DGPA for Regular and Lateral B.Tech programmes. Runs locally in your browser.">
+<meta property="og:image" content="/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MAKAUT SGPA &amp; CGPA Calculator | YGPA &amp; DGPA">
+<meta name="twitter:description" content="Free, lightweight MAKAUT academic calculator for SGPA, CGPA, YGPA, DGPA and GPA percentage conversion.">
+<meta name="twitter:image" content="/og-image.png">
+<link rel="icon" href="/favicon-48.png" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <style>
 :root{
   --bg:#090a09;--surface:#191a17;--elevated:#24251f;--fg:#f5f3ed;--muted:#d5d1c7;--subtle:#aaa69d;
@@ -83,7 +101,26 @@ header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 8
 main.wrap{padding-top:8px;padding-bottom:28px}
 .grid{display:grid;gap:8px;align-items:start}
 .grid>*{min-width:0}
-.card{background:color-mix(in srgb,var(--surface) 85%,transparent);border-radius:12px;box-shadow:var(--ring)}
+.card{background:color-mix(in srgb,var(--surface) 88%,transparent);border-radius:10px;box-shadow:var(--ring)}
+
+/* semantic page intro / SEO copy */
+.lh-title{min-width:0}
+.lh-title .micro{display:block;margin-bottom:1px}
+.lh h1{font:400 18px/1.05 var(--display);letter-spacing:-.01em}
+.seo-copy{margin:8px 2px 0;padding:8px 10px;color:var(--muted);font-size:11.5px;line-height:1.45}
+.seo-copy h2{font:400 15px var(--display);color:var(--fg);margin-bottom:2px}
+.seo-copy p+p{margin-top:2px}
+.seo-formulas{display:flex;flex-wrap:wrap;gap:2px 12px;color:var(--subtle);font-family:var(--mono);font-size:10.5px}
+@media (max-width:639px){
+  .hrow{grid-template-columns:auto minmax(0,1fr) auto;display:grid}
+  .seg{grid-column:2;min-width:0;width:100%}
+  .hact{grid-column:3}
+}
+@media (min-width:480px) and (max-width:639px){
+  .brand{display:none}
+  .hrow{grid-template-columns:auto minmax(150px,1fr) auto}
+}
+@media (min-width:640px){.lh h1{font-size:20px}.seo-copy{font-size:12px}.seo-formulas{font-size:10.75px}}
 
 /* ledger */
 .ledger{padding:8px}
@@ -201,151 +238,298 @@ dialog details p{font-size:13px;color:var(--muted);margin-top:6px}
 dialog a{color:var(--sage)}
 
 /* responsive layout */
-@media (max-width:479px){
-  .wrap{padding-left:8px;padding-right:8px}
-  .hrow{padding:5px 8px;gap:6px}
-  .mark{width:24px;height:24px;border-radius:7px}
-  .mark svg{width:14px;height:14px}
-  .seg button{height:25px;padding:0 6px;font-size:12px}
-  .hact{gap:2px}
-  .hact .btn.txt,.hact .btn.ico{width:29px;padding:0}
-  .strip-btn{gap:8px;padding:4px 8px}
-  .strip-btn .big{font-size:25px}
-  .strip-mid{font-size:11.5px}
-  .strip-mid .mono,.strip-r .mono{font-size:10.5px}
-  main.wrap{padding-top:6px;padding-bottom:18px}
-  .ledger{padding:6px}
-  .lh{padding:0 3px;margin-bottom:6px}
-  .lh h2{font-size:16px}
-  .years{gap:6px}
-  .year{padding:6px}
-  .yh{padding:0 2px 5px}
-  .yh h3{font-size:14px}
-  .yg{font-size:12px}
-  .cols,.row{grid-template-columns:29px minmax(0,1fr) minmax(0,1fr) 30px;gap:5px}
-  .cols{margin-bottom:3px}
-  .rows{gap:5px}
-  input,select{height:38px;padding:0 8px;border-radius:7px}
-  .row .sem{min-height:38px;border-radius:7px}
-  .row .btn.ico{width:30px}
-  .bench{margin-top:8px}
-  .bench-t{padding:7px 9px;margin-bottom:6px;font-size:15px}
-  .tool{padding:10px}
-  .tool .th{margin-bottom:6px}
-  .tool h3{font-size:15px}
-  .out{font-size:22px;margin-top:6px}
-  .acts{margin-top:8px}
-  details.known{padding:8px 10px}
-  .kgrid{gap:5px;margin-top:8px}
-}
+@media (max-width:767px){
+  :root{--hh:98px}
+  .wrap{padding-left:10px;padding-right:10px}
 
-@media (min-width:480px){
-  .brand{display:block;min-width:0}
-  .brand b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .hact .lbl{display:none}
-  .hact .btn.txt{width:30px;padding:0}
-}
+  header{background:color-mix(in srgb,var(--bg) 94%,transparent)}
+  .hrow{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:
+      "identity theme"
+      "seg hact";
+    gap:7px 8px;
+    padding:8px 10px;
+  }
+  .identity{grid-area:identity;display:flex;align-items:center;gap:9px;min-width:0}
+  .mark{width:36px;height:36px;border-radius:10px}
+  .mark svg{width:20px;height:20px}
+  .brand{display:block;min-width:0;line-height:1.1}
+  .brand b{display:block;font:400 18px var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand span{display:block;font-size:10px;color:var(--muted);margin-top:2px}
+  .theme-btn{grid-area:theme;width:40px;height:40px;border-radius:10px}
 
-@media (min-width:640px){
-  .lh p{display:block}
-  .seg{flex:none;width:196px;min-width:196px;margin-left:4px}
+  .seg{
+    grid-area:seg;
+    width:auto;min-width:0;margin:0;
+    padding:3px;border-radius:11px;
+  }
+  .seg button{
+    height:36px;
+    padding:0 8px;
+    font-size:14px;
+    border-radius:8px;
+  }
   .seg button small{display:none}
-  .seg button{font-size:12px;padding:0 5px}
-  footer .wrap{flex-direction:row;justify-content:space-between;align-items:center}
+
+  .hact{
+    grid-area:hact;
+    display:flex;
+    gap:4px;
+    align-items:center;
+    justify-content:flex-end;
+  }
+  .hact .lbl{display:none}
+  .hact .btn.txt{
+    width:38px;height:40px;
+    padding:0;border-radius:10px;
+  }
+
+  .strip{
+    top:var(--hh);
+    background:color-mix(in srgb,var(--bg) 95%,transparent);
+  }
+  .strip-btn{
+    min-height:88px;
+    display:grid;
+    grid-template-columns:92px minmax(0,1fr) 18px;
+    gap:10px;
+    align-items:center;
+    padding:9px 10px;
+  }
+  .strip-primary{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    min-width:0;
+  }
+  .strip-primary .micro{font-size:10px}
+  .strip-primary .big{
+    font:400 38px/.95 var(--display);
+    margin-top:2px;
+    letter-spacing:-.02em;
+  }
+  .strip-stats{
+    display:grid;
+    grid-template-columns:1.15fr 1fr .8fr;
+    gap:7px;
+    min-width:0;
+  }
+  .strip-stat{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding-left:8px;
+    border-left:1px solid var(--line);
+  }
+  .strip-stat .micro{font-size:9px;letter-spacing:.08em}
+  .strip-stat strong{
+    font-size:13px;
+    line-height:1.2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-weight:500;
+  }
+  .strip-stat .mono{font-size:12px}
+  .strip .chev{width:16px;height:16px}
+
+  main.wrap{padding-top:8px;padding-bottom:18px}
+  .ledger{padding:8px}
+  .lh{padding:0 3px;margin-bottom:7px}
+  .lh h1{font-size:19px}
+  .lh .micro{font-size:10px}
+  .seo-copy{margin-top:6px;padding:7px 8px;font-size:11px}
+  .seo-formulas{display:none}
+
+  .years{gap:7px}
+  .year{padding:7px;border-radius:10px}
+  .yh{padding:0 2px 6px}
+  .yh h3{font-size:16px}
+  .yh .y,.yh .w{font-size:10px}
+  .yg{font-size:12px}
+  .cols,.row{grid-template-columns:30px minmax(0,1fr) minmax(0,1fr) 32px;gap:6px}
+  .cols{margin-bottom:3px}
+  .rows{gap:6px}
+  input,select{height:38px;padding:0 8px;border-radius:8px}
+  .row .sem{min-height:38px;border-radius:8px}
+  .row .btn.ico{width:32px;height:38px}
+  .micro{font-size:10px}
+
+  .bench{margin-top:8px}
+  .bench-t{padding:9px 11px;margin-bottom:7px;font-size:16px}
+  .tool{padding:10px}
+  .tool .th{margin-bottom:7px}
+  .tool h3{font-size:16px}
+  .out{font-size:23px;margin-top:7px}
+  .acts{margin-top:9px}
+  details.known{padding:9px 10px}
+  .kgrid{gap:5px;margin-top:8px}
+
+  footer .wrap{padding-top:11px;padding-bottom:calc(11px + env(safe-area-inset-bottom))}
 }
 
-@media (min-width:800px){
-  .seg{width:212px;min-width:212px;margin-left:6px}
-  .seg button small{display:inline}
-  .seg button{font-size:13px;padding:0 7px}
-  .hact .lbl{display:inline}
-  .hact .btn.txt{width:auto;padding:0 8px}
+@media (max-width:380px){
+  .hrow{padding-left:8px;padding-right:8px;gap:6px}
+  .brand b{font-size:17px}
+  .brand span{font-size:9.5px}
+  .mark{width:34px;height:34px}
+  .theme-btn{width:38px;height:38px}
+  .seg button{height:35px;font-size:13px}
+  .hact{gap:3px}
+  .hact .btn.txt{width:36px;height:38px}
+  .strip-btn{grid-template-columns:82px minmax(0,1fr) 16px;gap:7px;min-height:84px;padding:8px}
+  .strip-primary .big{font-size:35px}
+  .strip-stat{padding-left:6px}
+  .strip-stat strong{font-size:12px}
+  .strip-stat .mono{font-size:11px}
+  .ledger{padding:7px}
+  .year{padding:6px}
+  .yh h3{font-size:15px}
 }
 
-@media (min-width:720px){
+@media (min-width:768px){
+  :root{--hh:51px}
+  .wrap{padding-left:14px;padding-right:14px}
+  .hrow{
+    max-width:1360px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:auto minmax(190px,1fr) auto auto;
+    grid-template-areas:"identity seg hact theme";
+    align-items:center;
+    gap:9px;
+    padding:7px 14px;
+  }
+  .identity{grid-area:identity;display:flex;align-items:center;gap:9px;min-width:0}
+  .mark{width:30px;height:30px}
+  .mark svg{width:17px;height:17px}
+  .brand{display:block;min-width:0}
+  .brand b{font:400 18px var(--display);white-space:nowrap}
+  .brand span{display:block;font-size:10px;color:var(--muted)}
+  .seg{grid-area:seg;min-width:190px;width:100%;padding:2px}
+  .seg button{height:32px;font-size:13px;padding:0 7px}
+  .seg button small{display:inline;font-size:10px}
+  .hact{grid-area:hact;display:flex;gap:3px}
+  .hact .lbl{display:none}
+  .hact .btn.txt{width:34px;height:36px;padding:0}
+  .theme-btn{grid-area:theme;width:36px;height:36px}
+
+  main.wrap{padding-top:10px;padding-bottom:22px}
+  .ledger{padding:11px}
+  .lh{margin-bottom:8px}
+  .lh h1{font-size:21px}
+  .lh .micro{font-size:10px}
+  .seo-copy{font-size:11.5px;padding:7px 9px}
+  .years{grid-template-columns:1fr 1fr;gap:9px}
+  .year{padding:9px}
+  .yh h3{font-size:18px}
+  .cols,.row{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) 34px;gap:7px}
+  .rows{gap:7px}
+  input,select{height:38px;font-size:14px}
+  .row .sem{min-height:38px}
+  .row .btn.ico{width:34px;height:38px}
+
+  .grid{gap:12px}
+  .bench{margin-top:11px}
+  .bench h2{font-size:22px;margin-bottom:7px}
+  .tools{gap:8px}
+  .tool{padding:10px}
+  .tool h3{font-size:17px}
+  .out{font-size:28px}
+}
+
+@media (min-width:768px) and (max-width:1023px){
+  .grid{grid-template-columns:1fr}
+  .panel{display:none}
   .years{grid-template-columns:1fr 1fr}
   .tools{grid-template-columns:1fr 1fr}
-  .kgrid{grid-template-columns:repeat(8,1fr)}
+  .hrow{grid-template-columns:auto minmax(200px,1fr) auto auto}
 }
 
 @media (min-width:1024px){
   .strip{display:none}
-  .wrap{padding-left:14px;padding-right:14px}
-  main.wrap{padding-top:10px;padding-bottom:20px}
+  .wrap{padding-left:18px;padding-right:18px}
+  main.wrap{padding-top:12px;padding-bottom:24px}
+  .grid{grid-template-columns:minmax(0,1fr) 320px;gap:12px;align-items:start}
 
-  /* Content-sized ledger: no artificial equal-height cards. */
-  .grid{grid-template-columns:minmax(0,1fr) 340px;gap:12px;align-items:start}
-  .ledger{display:block;padding:10px}
-  .years{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .year{display:block;padding:8px}
-  .yh{padding-bottom:6px}
+  .card{border-radius:10px}
+  .ledger{padding:12px}
+  .lh{margin-bottom:9px}
+  .lh h1{font-size:23px}
+  .lh .micro{font-size:10px}
+  .seo-copy{font-size:11.5px;padding:7px 9px}
+  .years{gap:9px}
+  .year{
+    padding:10px;
+    background:color-mix(in srgb,var(--elevated) 56%,transparent);
+    box-shadow:none;
+    border:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+  }
+  .yh{padding-bottom:7px}
   .yh h3{font-size:18px}
-  .yg{font-size:13px}
+  .yg{font-size:12.5px}
   .cols,.row{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) 34px;gap:7px}
   .rows{gap:7px}
-  input,select{height:38px;font-size:14px;padding:0 9px}
-  .row .sem{min-height:38px;font-size:12px}
-  .btn{height:34px;font-size:13px}
-  .btn.ico{width:34px}
+  input,select{height:38px;font-size:14px}
+  .row .sem{min-height:38px}
+  .row .btn.ico{width:34px;height:38px}
 
-  .panel{display:flex;flex-direction:column;justify-content:space-between;gap:10px;padding:12px}
-  .pa{display:flex;flex-direction:row;align-items:center;gap:10px;text-align:left}
-  .gauge{width:112px;height:112px}
-  .gauge .c b{font-size:34px}
-  .pct{font-size:13px}
+  .panel{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding:12px;
+    box-shadow:none;
+    border:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+  }
+  .pa{display:flex;align-items:center;gap:10px;text-align:left}
+  .gauge{width:102px;height:102px}
+  .gauge .c b{font-size:31px}
+  .pct{font-size:12px}
   .band{font-size:11px}
-  .det{margin:0;padding-top:9px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
-  .det dl.m{grid-template-columns:repeat(3,1fr);gap:6px 10px}
-  .det dl.m>div.w2{grid-column:span 2;justify-content:flex-start;gap:10px}
-  .det .bars,.det .note,.det .acts{margin-top:0}
-  .det .side{display:grid;gap:8px}
-  .det dl.m dd{font-size:14px}
+  .det{padding-top:9px;gap:9px}
+  .det dl.m{gap:6px 8px}
+  .det dl.m dd{font-size:13px}
   .bars{gap:3px}
-  .bar{font-size:11px;grid-template-columns:58px 1fr 36px;gap:6px}
+  .bar{font-size:10.5px;grid-template-columns:54px 1fr 34px;gap:5px}
   .bar .tr{height:5px}
-  .note{font-size:11px;padding:6px 8px}
+  .note{font-size:10.5px;padding:6px 8px}
   .acts{gap:5px}
+  .acts .btn{height:32px;font-size:12px}
 
-  .bench{margin-top:10px}
-  .bench-t{display:none}
-  .bench h2{display:block;font-size:22px;padding:0 4px;margin-bottom:6px}
-  .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:start}
-  .tool{padding:10px}
+  .bench{margin-top:12px}
+  .bench h2{display:block;font-size:22px;padding:0 2px;margin-bottom:7px}
+  .tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(280px,1.05fr);gap:9px}
+  .tool{
+    padding:10px;
+    box-shadow:none;
+    border:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+  }
   .tool h3{font-size:17px}
-  .tool .th{margin-bottom:6px}
-  .out{font-size:28px;margin-top:6px}
-  .hint{font-size:11px}
+  .out{font-size:28px}
+  .hint{font-size:10.5px}
   .tool.subj{grid-column:3;grid-row:1 / span 2}
-  details.known{grid-column:1 / span 2;padding:8px 10px}
+  details.known{
+    grid-column:1 / span 2;
+    padding:9px 10px;
+    box-shadow:none;
+    border:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+  }
   .kgrid{gap:5px;margin-top:8px}
-  .kgrid input{height:34px}
-
-  .hrow{max-width:1400px;margin:0 auto;padding:6px 14px}
-  .mark{width:28px;height:28px}
-  .brand b{font-size:18px}
-  .brand span{display:block;font-size:11px}
-  .seg{width:212px;min-width:212px}
-  .seg button{height:29px}
-  body{font-size:14px}
+  .kgrid input{height:32px}
+  .hact .btn.txt{width:36px;height:36px}
+  .theme-btn{width:36px;height:36px}
 }
 
-@media (min-width:1280px){
-  .wrap,.hrow{max-width:1360px}
-  .grid{grid-template-columns:minmax(0,1fr) 360px;gap:14px}
-  .ledger{padding:11px}
-  .years{gap:9px}
-  .year{padding:9px}
-  .yh h3{font-size:19px}
-  .cols,.row{grid-template-columns:36px minmax(0,1fr) minmax(0,1fr) 36px;gap:8px}
-  .rows{gap:8px}
-  input,select{height:40px}
-  .row .sem{min-height:40px}
-  .panel{padding:13px}
-  .gauge{width:118px;height:118px}
-  .tool{padding:11px}
-  .tool h3{font-size:18px}
-  .out{font-size:30px}
-  .bench h2{font-size:23px}
+@media (min-width:1200px){
+  .wrap,.hrow{max-width:1400px}
+  .hact .lbl{display:inline}
+  .hact .btn.txt{width:auto;padding:0 8px}
+  .seg{min-width:230px}
+  .seg button{font-size:13.5px}
 }
 
 @media print{
@@ -356,6 +540,16 @@ dialog a{color:var(--sage)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"SoftwareApplication",
+  "name":"MAKAUT Ledger",
+  "applicationCategory":"EducationalApplication",
+  "operatingSystem":"Web",
+  "description":"Free MAKAUT SGPA, CGPA, YGPA and DGPA calculator for Regular and Lateral B.Tech students, with GPA and percentage conversion and subject-wise SGPA."
+}
+</script>
 </head>
 <body>
 
@@ -378,28 +572,50 @@ dialog a{color:var(--sage)}
 
 <header id="hdr">
   <div class="hrow">
-    <span class="mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="1.5" fill="none" stroke="var(--accent)" stroke-width="1.5"/><path d="M8 8.5h8M8 12h8M8 15.5h5" stroke="var(--sage)" stroke-width="1.4" stroke-linecap="round"/></svg>
-    </span>
-    <div class="brand"><b>MAKAUT Ledger</b><span>SGPA · CGPA · YGPA · DGPA</span></div>
+    <div class="identity">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="1.5" fill="none" stroke="var(--accent)" stroke-width="1.5"/><path d="M8 8.5h8M8 12h8M8 15.5h5" stroke="var(--sage)" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </span>
+      <div class="brand"><b>MAKAUT Ledger</b><span>SGPA · CGPA · YGPA · DGPA</span></div>
+    </div>
+
     <div class="seg" role="tablist" aria-label="Programme type">
       <button role="tab" data-prog="regular" aria-selected="true">Regular <small>8 sem</small></button>
       <button role="tab" data-prog="lateral" aria-selected="false">Lateral <small>Sem 3–8</small></button>
     </div>
+
     <div class="hact">
-      <button class="btn ghost txt" id="b-sample" title="Load sample"><svg class="i s"><use href="#i-list"/></svg><span class="lbl">Sample</span></button>
-      <button class="btn ghost txt" id="b-reset" title="Reset"><svg class="i s"><use href="#i-reset"/></svg><span class="lbl">Reset</span></button>
-      <button class="btn sec txt" id="b-rules" title="Rules and reference"><svg class="i s"><use href="#i-book"/></svg><span class="lbl">Rules</span></button>
-      <button class="btn ghost ico" id="b-theme" aria-label="Toggle theme"><svg class="i"><use id="theme-use" href="#i-sun"/></svg></button>
+      <button class="btn ghost txt" id="b-sample" title="Load sample" aria-label="Load sample"><svg class="i s"><use href="#i-list"/></svg><span class="lbl">Sample</span></button>
+      <button class="btn ghost txt" id="b-reset" title="Reset" aria-label="Reset"><svg class="i s"><use href="#i-reset"/></svg><span class="lbl">Reset</span></button>
+      <button class="btn sec txt" id="b-rules" title="Rules and reference" aria-label="Rules and reference"><svg class="i s"><use href="#i-book"/></svg><span class="lbl">Rules</span></button>
     </div>
+
+    <button class="btn ghost ico theme-btn" id="b-theme" aria-label="Toggle theme" title="Toggle theme"><svg class="i"><use id="theme-use" href="#i-sun"/></svg></button>
   </div>
 </header>
 
 <div class="strip no-print" id="strip">
   <button class="strip-btn" id="strip-btn" aria-expanded="false" aria-controls="drop">
-    <div><div class="micro" id="s-label">Current CGPA</div><div class="big" id="s-cgpa">—</div></div>
-    <div class="strip-mid"><div id="s-pct">Enter a semester</div><div class="mono" id="s-count">0/8 sems</div></div>
-    <div class="strip-r"><div class="micro">DGPA</div><div class="mono" id="s-dgpa">—</div></div>
+    <div class="strip-primary">
+      <span class="micro" id="s-label">Current CGPA</span>
+      <strong class="big" id="s-cgpa">—</strong>
+    </div>
+
+    <div class="strip-stats">
+      <div class="strip-stat">
+        <span class="micro">Percentage</span>
+        <strong id="s-pct">Enter a semester</strong>
+      </div>
+      <div class="strip-stat">
+        <span class="micro">Progress</span>
+        <strong class="mono" id="s-count">0/8 sems</strong>
+      </div>
+      <div class="strip-stat">
+        <span class="micro">DGPA</span>
+        <strong class="mono" id="s-dgpa">—</strong>
+      </div>
+    </div>
+
     <svg class="i chev"><use href="#i-chev"/></svg>
   </button>
   <div class="drop" id="drop"></div>
@@ -408,7 +624,10 @@ dialog a{color:var(--sage)}
 <main class="wrap">
   <div class="grid">
     <section class="card ledger" aria-label="Semester ledger">
-      <div class="lh"><h2>Semester ledger</h2><p>Credits prefilled from GCETTS IT reference where known</p></div>
+      <div class="lh">
+        <div class="lh-title"><span class="micro">Semester ledger</span><h1>MAKAUT SGPA &amp; CGPA Calculator</h1></div>
+        <p>Credit-weighted calculator for Regular and Lateral B.Tech programmes</p>
+      </div>
       <div class="years" id="years"></div>
     </section>
 
@@ -463,6 +682,12 @@ dialog a{color:var(--sage)}
       </details>
     </div>
 
+  </section>
+
+  <section class="seo-copy" aria-labelledby="about-calculator">
+    <h2 id="about-calculator">MAKAUT academic calculator</h2>
+    <p>Use MAKAUT Ledger to calculate credit-weighted <strong>SGPA, CGPA, YGPA and DGPA</strong> for Regular and Lateral B.Tech programmes. It also includes GPA-to-percentage conversion, percentage-to-GPA conversion and subject-wise SGPA.</p>
+    <p class="seo-formulas"><span>CGPA = Σ(SGPA × Credits) ÷ Σ(Credits)</span><span>GPA → % = (GPA − 0.75) × 10</span><span>Works locally in your browser.</span></p>
   </section>
 </main>
 

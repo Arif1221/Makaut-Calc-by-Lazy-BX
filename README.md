@@ -133,3 +133,30 @@ The application deliberately prioritizes:
 5. Touch-friendly controls
 6. Dense information layout without sacrificing readability
 7. Simple maintenance and deployment
+
+
+## SEO and discoverability
+
+This static build includes:
+
+- A descriptive, search-focused page title and meta description
+- `robots` directives allowing indexing
+- Open Graph and Twitter Card metadata
+- `SoftwareApplication` structured data
+- Semantic primary heading (`h1`) and topical on-page copy
+- Stable local favicon and Apple touch icon
+- A web app manifest
+- `robots.txt` that permits crawling
+
+### Canonical URL and sitemap
+
+The production hostname is intentionally not hard-coded because it depends on the final Vercel domain or custom domain. After choosing the final URL, add a self-referential `rel="canonical"` tag and create a sitemap containing that exact canonical URL. Google recommends keeping canonical signals and sitemap URLs aligned.
+
+After deployment, verify the homepage in Google Search Console using URL Inspection and submit the production sitemap when available.
+
+
+## UI refinement pass
+
+The current version uses a two-level mobile header so the Regular/Lateral switch and utility controls remain readable without overlap. The mobile result summary is presented as a larger, structured sticky summary with clearly separated Percentage, Progress, and DGPA values.
+
+Desktop sizing stays compact instead of scaling every control upward on larger screens. Utility labels remain icon-only until the viewport has enough room, and nested cards use lighter borders to reduce visual clutter.
