@@ -150,9 +150,9 @@ This static build includes:
 
 ### Canonical URL and sitemap
 
-The production hostname is intentionally not hard-coded because it depends on the final Vercel domain or custom domain. After choosing the final URL, add a self-referential `rel="canonical"` tag and create a sitemap containing that exact canonical URL. Google recommends keeping canonical signals and sitemap URLs aligned.
+The preferred production URL is `https://makaut-cgpa-calculator.vercel.app/`. The older `https://makautcalcbx.vercel.app/` deployment serves the same app, so both page copies point their canonical and search/social metadata to the preferred URL. The sitemap lists only the preferred URL, and `robots.txt` points to that sitemap. Keep these values aligned if the preferred domain changes. Google treats canonicals and sitemap URLs as signals and may choose a different canonical.
 
-After deployment, verify the homepage in Google Search Console using URL Inspection and submit the production sitemap when available.
+After deployment, verify the homepage in Google Search Console using URL Inspection and submit `/sitemap.xml`. This repository does not include a Search Console verification token or account connection.
 
 
 ## UI refinement pass

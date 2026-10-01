@@ -4,30 +4,34 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MAKAUT SGPA &amp; CGPA Calculator | YGPA &amp; DGPA</title>
-<meta name="description" content="Free MAKAUT SGPA, CGPA, YGPA and DGPA calculator for Regular and Lateral B.Tech students. Credit-weighted, mobile-friendly and works in your browser.">
+<meta name="description" content="Calculate credit-weighted MAKAUT SGPA, CGPA, YGPA and final DGPA for Regular and Lateral B.Tech. Includes GPA/percentage converters and subject SGPA; saves in your browser.">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="googlebot" content="index, follow">
 <meta name="application-name" content="MAKAUT Ledger">
 <meta name="author" content="MAKAUT Ledger">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#f3f0e8">
+<link rel="canonical" href="https://makaut-cgpa-calculator.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MAKAUT Ledger">
+<meta property="og:url" content="https://makaut-cgpa-calculator.vercel.app/">
 <meta property="og:title" content="MAKAUT SGPA &amp; CGPA Calculator | YGPA &amp; DGPA">
-<meta property="og:description" content="Calculate MAKAUT SGPA, CGPA, YGPA and DGPA for Regular and Lateral B.Tech programmes. Runs locally in your browser.">
-<meta property="og:image" content="/og-image.png">
+<meta property="og:description" content="Calculate credit-weighted MAKAUT SGPA, CGPA, YGPA and final DGPA for Regular and Lateral B.Tech. Includes GPA/percentage converters and subject SGPA.">
+<meta property="og:image" content="https://makaut-cgpa-calculator.vercel.app/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="MAKAUT Ledger, a calculator for SGPA, CGPA, YGPA and DGPA">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="MAKAUT SGPA &amp; CGPA Calculator | YGPA &amp; DGPA">
-<meta name="twitter:description" content="Free, lightweight MAKAUT academic calculator for SGPA, CGPA, YGPA, DGPA and GPA percentage conversion.">
-<meta name="twitter:image" content="/og-image.png">
+<meta name="twitter:description" content="Calculate credit-weighted SGPA, CGPA, YGPA and DGPA for Regular and Lateral B.Tech. Includes GPA/percentage converters and subject SGPA.">
+<meta name="twitter:image" content="https://makaut-cgpa-calculator.vercel.app/og-image.png">
+<meta name="twitter:image:alt" content="MAKAUT Ledger, a calculator for SGPA, CGPA, YGPA and DGPA">
 <link rel="icon" href="/favicon-48.png" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <style>
 :root{
-  --bg:#f3f0e8;--surface:#faf8f2;--elevated:#ebe7dc;--fg:#1c1c19;--muted:#57554e;--subtle:#706d64;
+  --bg:#f3f0e8;--surface:#faf8f2;--elevated:#ebe7dc;--fg:#1c1c19;--muted:#57554e;--subtle:#625f57;
   --accent:#292923;--accent-fg:#f3f0e8;--line:#c5c0b4;--sage:#526c4b;--danger:#a8544d;
   --ring:0 0 0 1px rgb(28 28 25/.10);--ring-h:0 0 0 1px rgb(28 28 25/.2);
   --display:Georgia,"Times New Roman",ui-serif,serif;
@@ -39,20 +43,20 @@
   color-scheme:light;
 }
 :root[data-theme=dark]{
-  --bg:#10120f;--surface:#1b1e19;--elevated:#262a24;--fg:#f4f2e9;--muted:#d0d0c5;--subtle:#aaa99e;
+  --bg:#10120f;--surface:#1b1e19;--elevated:#262a24;--fg:#f4f2e9;--muted:#d0d0c5;--subtle:#c0bfb4;
   --accent:#dce7d6;--accent-fg:#171a15;--line:#565d52;--sage:#b3c9a9;--danger:#efa39a;
   --ring:0 0 0 1px rgb(244 242 233/.14);--ring-h:0 0 0 1px rgb(244 242 233/.28);color-scheme:dark;
 }
 *{box-sizing:border-box;margin:0}
 html{-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
-body{background:var(--bg);color:var(--fg);font:13.5px/1.4 var(--sans);min-height:100dvh;
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--sans);min-height:100dvh;
   background-image:radial-gradient(1000px 400px at 12% -10%,rgb(138 154 130/.08),transparent 55%)}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;pointer-events:none}
 svg.i.s{width:14px;height:14px}
 .mono{font-family:var(--mono)}
 .disp{font-family:var(--display);font-weight:400;letter-spacing:-.01em}
-.micro{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);font-weight:500}
+.micro{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--subtle);font-weight:500}
 .wrap{max-width:1400px;margin:0 auto;padding:0 12px}
 
 /* buttons */
@@ -111,10 +115,13 @@ main.wrap{padding-top:8px;padding-bottom:28px}
 /* semantic page intro / SEO copy */
 .lh-title{min-width:0}
 .lh-title .micro{display:block;margin-bottom:1px}
-.lh h1{font:400 18px/1.05 var(--display);letter-spacing:-.01em}
-.seo-copy{margin:8px 2px 0;padding:8px 10px;color:var(--muted);font-size:11.5px;line-height:1.45}
-.seo-copy h2{font:400 15px var(--display);color:var(--fg);margin-bottom:2px}
-.seo-copy p+p{margin-top:2px}
+.lh h1{font:400 18px/1.15 var(--display);letter-spacing:-.01em}
+.seo-copy{max-width:78ch;margin:8px 2px 0;padding:8px 10px;color:var(--muted);font-size:13px;line-height:1.6}
+.seo-copy h2{font:400 17px/1.3 var(--display);color:var(--fg);margin-bottom:5px}
+.seo-points{margin:8px 0 0;padding-left:20px;display:grid;gap:6px}
+.seo-points li{padding-left:2px}
+.seo-points li::marker{color:var(--sage)}
+.seo-points strong{color:var(--fg);font-weight:600}
 .seo-formulas{display:flex;flex-wrap:wrap;gap:2px 12px;color:var(--subtle);font-family:var(--mono);font-size:10.5px}
 @media (min-width:640px){.lh h1{font-size:20px}.seo-copy{font-size:12px}.seo-formulas{font-size:10.75px}}
 
@@ -159,11 +166,11 @@ dl.m{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
 dl.m>div.w2{grid-column:span 2;display:flex;justify-content:space-between;align-items:baseline}
 dl.m dd{font:14px var(--mono);font-variant-numeric:tabular-nums}
 .bars{margin-top:12px;display:grid;gap:4px}
-.bar{display:grid;grid-template-columns:56px 1fr 36px;gap:8px;align-items:center;font:11px var(--mono)}
+.bar{display:grid;grid-template-columns:56px 1fr 36px;gap:8px;align-items:center;font:12px var(--mono)}
 .bar .k{color:var(--subtle)}.bar .v{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
 .bar .tr{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
 .bar .tr i{display:block;height:100%;border-radius:99px;background:color-mix(in srgb,var(--accent) 85%,transparent);transition:width .45s cubic-bezier(.22,1,.36,1)}
-.note{margin-top:12px;font-size:11px;line-height:1.35;color:var(--muted);background:var(--bg);box-shadow:var(--ring);border-radius:8px;padding:6px 10px}
+.note{margin-top:12px;font-size:12px;line-height:1.5;color:var(--muted);background:var(--bg);box-shadow:var(--ring);border-radius:8px;padding:8px 10px}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px}
 
 /* desktop result band */
@@ -188,11 +195,11 @@ dl.m dd{font:14px var(--mono);font-variant-numeric:tabular-nums}
 .tool{padding:12px}
 .tool .th{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
 .tool h3{font:400 16px var(--display)}
-.tool .k{font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--subtle)}
+.tool .k{font:12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--subtle)}
 .tool label.micro{display:block;margin-bottom:2px}
 .out{font:400 24px/1.2 var(--display);margin-top:8px;font-variant-numeric:tabular-nums}
 .out.bad{color:var(--danger)}
-.hint{font-size:11px;color:var(--muted);margin-top:2px}
+.hint{font-size:13px;line-height:1.5;color:var(--muted);margin-top:4px}
 .srow{display:grid;grid-template-columns:1fr 1fr 30px;gap:6px;margin-bottom:6px;align-items:center}
 .sbtns{display:flex;gap:6px;margin-top:8px}.sbtns .btn:first-child{flex:1}
 details.known{padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--surface) 65%,transparent);box-shadow:var(--ring)}
@@ -204,7 +211,7 @@ details.known summary em{font:normal 11px var(--mono);letter-spacing:.1em;text-t
 .kgrid label{margin-bottom:2px;display:block}
 details.known .btn{margin-top:8px}
 
-footer{border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+footer{border-top:1px solid var(--line);font-size:12px;line-height:1.5;color:var(--muted)}
 footer .wrap{display:flex;flex-direction:column;gap:2px;padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 
 /* toast */
@@ -218,12 +225,12 @@ dialog{border:0;padding:0;background:var(--surface);color:var(--fg);max-width:mi
 dialog::backdrop{background:rgb(0 0 0/.55)}
 dialog .sh{position:sticky;top:0;background:var(--surface);padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:start}
 dialog .sh h2{font:400 20px var(--display)}
-dialog .sh p{font-size:12px;color:var(--muted);margin-top:2px}
+dialog .sh p{font-size:13px;color:var(--muted);margin-top:2px;line-height:1.5}
 dialog .sb{padding:16px;display:grid;gap:20px}
 dialog h3{font:400 18px var(--display)}
-dialog ul{margin:8px 0 0 16px;font-size:13px;color:var(--muted);display:grid;gap:4px}
-dialog .f{margin-top:10px;background:var(--bg);box-shadow:var(--ring);border-radius:8px;padding:6px 10px;font:12px var(--mono)}
-dialog table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px;border-radius:8px;overflow:hidden;box-shadow:var(--ring)}
+dialog ul{margin:8px 0 0 16px;font-size:14px;line-height:1.5;color:var(--muted);display:grid;gap:6px}
+dialog .f{margin-top:10px;background:var(--bg);box-shadow:var(--ring);border-radius:8px;padding:8px 10px;font:13px/1.5 var(--mono)}
+dialog table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px;border-radius:8px;overflow:hidden;box-shadow:var(--ring)}
 dialog th{background:var(--elevated);text-align:left;padding:6px 10px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);font-weight:500}
 dialog td{padding:6px 10px;border-top:1px solid var(--line);color:var(--muted)}
 dialog td.mono{color:var(--fg)}
@@ -260,21 +267,21 @@ dialog a{color:var(--sage)}
   .strip{top:var(--hh);background:color-mix(in srgb,var(--bg) 97%,transparent)}
   .strip-btn{display:grid;grid-template-columns:max-content minmax(0,1fr) 18px;grid-template-rows:1fr;gap:8px;padding:5px 10px;min-height:50px}
   .strip-primary{grid-column:1;grid-row:1;display:flex;flex-direction:row;align-items:baseline;justify-content:flex-start;gap:7px;min-width:0}
-  .strip-primary .micro{font-size:9px;letter-spacing:.05em;white-space:nowrap}
+  .strip-primary .micro{font-size:10px;letter-spacing:.04em;white-space:nowrap}
   .strip-primary .big{font:400 30px/.95 var(--display);letter-spacing:-.02em}
   .strip-stats{display:contents}
   .strip-stat{min-width:0;display:flex;align-items:baseline;justify-content:flex-end;gap:0;padding:0;border:0}
   .strip-stat:nth-child(1){grid-column:2;grid-row:1}
   .strip-stat:nth-child(1) .micro{display:none}
   .strip-stat:nth-child(2),.strip-stat:nth-child(3){display:none}
-  .strip-stat .micro{font-size:8px;letter-spacing:.04em;white-space:nowrap}
-  .strip-stat strong{font-size:11px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
-  .strip-stat .mono{font-size:11px}
+  .strip-stat .micro{font-size:9px;letter-spacing:.03em;white-space:nowrap}
+  .strip-stat strong{font-size:12px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+  .strip-stat .mono{font-size:12px}
   .strip .chev{grid-column:3;grid-row:1;width:16px;height:16px}
   main.wrap{padding-top:8px;padding-bottom:18px}
   .lh{padding:0 2px;margin-bottom:8px}
   .lh h1{font-size:19px}
-  .seo-copy{margin:6px 0 0;padding:7px 0;font-size:11px}
+  .seo-copy{margin:8px 0 0;padding:8px 0;font-size:13px;line-height:1.6}
   .seo-formulas{display:none}
   .years{grid-template-columns:1fr;gap:7px}
   .year{padding:7px}
@@ -304,9 +311,9 @@ dialog a{color:var(--sage)}
   .hact .btn.txt{width:35px}
   .strip-btn{grid-template-columns:max-content minmax(0,1fr) 16px;gap:5px;padding-left:8px;padding-right:8px}
   .strip-primary{gap:5px}
-  .strip-primary .micro{font-size:8px}
+  .strip-primary .micro{font-size:9px}
   .strip-primary .big{font-size:29px}
-  .strip-stat strong{font-size:10.5px}
+  .strip-stat strong{font-size:11px}
   .year{padding:7px}
   .cols,.row{grid-template-columns:29px minmax(0,1fr) minmax(0,1fr) 36px;gap:5px}
 }
@@ -335,7 +342,7 @@ dialog a{color:var(--sage)}
   main.wrap{padding-top:12px;padding-bottom:22px}
   .ledger{padding:10px 0}
   .lh h1{font-size:21px}
-  .seo-copy{font-size:11.5px;padding:7px 0}
+  .seo-copy{font-size:13px;padding:8px 0}
   .tools{gap:10px}
   .tool{padding:12px}
   .kgrid{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -390,9 +397,9 @@ dialog a{color:var(--sage)}
   .pct{font-size:12px}.band{font-size:11px}
   .det dl.m{gap:8px 10px}.det dl.m dd{font-size:13px}
   .bars{margin-top:10px;gap:4px}
-  .bar{font-size:10.5px;grid-template-columns:54px minmax(0,1fr) 34px;gap:6px}
+  .bar{font-size:12px;grid-template-columns:54px minmax(0,1fr) 34px;gap:6px}
   .bar .tr{height:5px}
-  .note{font-size:10.5px;padding:7px 9px}
+  .note{font-size:12px;line-height:1.5;padding:8px 10px}
   .acts{gap:6px}.acts .btn{height:36px}
   .bench{margin-top:20px}
   .bench-t{max-width:360px;margin-bottom:12px;font-size:17px}
@@ -417,11 +424,29 @@ dialog a{color:var(--sage)}
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
-  "@type":"SoftwareApplication",
-  "name":"MAKAUT Ledger",
-  "applicationCategory":"EducationalApplication",
-  "operatingSystem":"Web",
-  "description":"Free MAKAUT SGPA, CGPA, YGPA and DGPA calculator for Regular and Lateral B.Tech students, with GPA and percentage conversion and subject-wise SGPA."
+  "@graph":[
+    {
+      "@type":"WebSite",
+      "@id":"https://makaut-cgpa-calculator.vercel.app/#website",
+      "url":"https://makaut-cgpa-calculator.vercel.app/",
+      "name":"MAKAUT Ledger",
+      "alternateName":"MAKAUT SGPA & CGPA Calculator",
+      "inLanguage":"en"
+    },
+    {
+      "@type":"SoftwareApplication",
+      "@id":"https://makaut-cgpa-calculator.vercel.app/#calculator",
+      "name":"MAKAUT Ledger",
+      "url":"https://makaut-cgpa-calculator.vercel.app/",
+      "image":"https://makaut-cgpa-calculator.vercel.app/og-image.png",
+      "applicationCategory":"EducationalApplication",
+      "operatingSystem":"Web browser",
+      "isAccessibleForFree":true,
+      "offers":{"@type":"Offer","price":0},
+      "description":"Calculate credit-weighted MAKAUT SGPA, CGPA, YGPA and final DGPA for Regular and Lateral B.Tech, with GPA/percentage converters and subject SGPA.",
+      "inLanguage":"en"
+    }
+  ]
 }
 </script>
 </head>
@@ -559,9 +584,14 @@ dialog a{color:var(--sage)}
   </section>
 
   <section class="seo-copy" aria-labelledby="about-calculator">
-    <h2 id="about-calculator">MAKAUT academic calculator</h2>
-    <p>Use MAKAUT Ledger to calculate credit-weighted <strong>SGPA, CGPA, YGPA and DGPA</strong> for Regular and Lateral B.Tech programmes. It also includes GPA-to-percentage conversion, percentage-to-GPA conversion and subject-wise SGPA.</p>
-    <p class="seo-formulas"><span>CGPA = Σ(SGPA × Credits) ÷ Σ(Credits)</span><span>GPA → % = (GPA − 0.75) × 10</span><span>Works locally in your browser.</span></p>
+    <h2 id="about-calculator">How the MAKAUT calculator works</h2>
+    <ul class="seo-points">
+      <li><strong>Choose a programme.</strong> Regular B.Tech covers Semesters 1–8; Lateral entry covers Semesters 3–8.</li>
+      <li><strong>Enter SGPA and credits.</strong> The calculator updates your credit-weighted CGPA and year-wise YGPA. Incomplete or invalid semesters are skipped.</li>
+      <li><strong>Check your final results.</strong> DGPA appears when all required semesters are complete. Use the extra tools for GPA/percentage conversion and subject SGPA.</li>
+    </ul>
+    <p>Your entries stay in this browser.</p>
+    <p class="seo-formulas"><span>CGPA = Σ(SGPA × Credits) ÷ Σ(Credits)</span><span>YGPA = Σ(SGPA × Credits) ÷ Σ(Credits) within a year</span><span>GPA → % = (GPA − 0.75) × 10</span></p>
   </section>
 </main>
 
